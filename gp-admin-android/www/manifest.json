@@ -1,0 +1,26 @@
+{
+  "name": "GP Админ — Студия Потехиной",
+  "short_name": "GP Админ",
+  "description": "Мобильное управление сайтом студии: фото, цены, тексты",
+  "start_url": "/admin/index.html",
+  "scope": "/admin/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d0d",
+  "theme_color": "#b8975a",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/admin/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

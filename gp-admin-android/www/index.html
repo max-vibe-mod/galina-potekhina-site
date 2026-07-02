@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#b8975a">
+  <title>GP Админ</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <section id="screen-login" class="screen screen--active">
+    <div class="login-wrap">
+      <img src="logo.png" alt="" class="login-logo" width="88" height="88">
+      <h1>GP Админ</h1>
+      <p class="login-sub">Приложение студии · Android</p>
+      <label for="mobile-key">Ключ доступа</label>
+      <input type="password" id="mobile-key" autocomplete="off" placeholder="Вставьте ключ">
+      <button type="button" class="btn btn-gold" id="btn-login">Войти</button>
+      <div id="login-status" class="status"></div>
+    </div>
+  </section>
+
+  <div id="screen-app" class="screen" hidden>
+    <header class="app-header">
+      <img src="logo.png" alt="" width="40" height="40">
+      <div class="app-header-text">
+        <h1>GP Админ</h1>
+        <p id="header-sub">Загрузка…</p>
+      </div>
+      <span id="badge-total" class="badge" hidden>0</span>
+    </header>
+
+    <main>
+      <section id="panel-inbox" class="panel is-active">
+        <div class="card">
+          <h2>Новые заявки</h2>
+          <div class="stat-row">
+            <div class="stat"><span id="stat-orders">0</span><small>Заказы</small></div>
+            <div class="stat"><span id="stat-rentals">0</span><small>Аренда</small></div>
+            <div class="stat"><span id="stat-media">0</span><small>Запросы</small></div>
+          </div>
+          <button type="button" class="btn btn-ghost" id="btn-enable-push">🔔 Уведомления</button>
+        </div>
+        <div id="inbox-list" class="inbox-list"></div>
+      </section>
+
+      <section id="panel-gallery" class="panel">
+        <div class="card">
+          <h2>Коллекция</h2>
+          <button type="button" class="btn btn-gold" id="btn-new-dress">+ Новое платье</button>
+        </div>
+        <div id="gallery-list" class="dress-list"></div>
+      </section>
+
+      <section id="panel-texts" class="panel">
+        <div class="card">
+          <h2>Тексты и контакты</h2>
+          <label for="set-phone">Телефон</label>
+          <input type="tel" id="set-phone">
+          <label for="set-hero-title">Заголовок</label>
+          <input type="text" id="set-hero-title">
+          <label for="set-hero-sub">Подзаголовок</label>
+          <input type="text" id="set-hero-sub">
+          <label for="set-rental-title">Аренда — заголовок</label>
+          <input type="text" id="set-rental-title">
+          <label for="set-rental-text">Аренда — текст</label>
+          <textarea id="set-rental-text"></textarea>
+          <button type="button" class="btn btn-gold" id="btn-save-texts">Сохранить</button>
+          <div id="texts-status" class="status"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button type="button" data-panel="inbox" class="is-active"><span class="ico">🔔</span>Заявки<span class="nav-badge" id="nav-badge" hidden></span></button>
+      <button type="button" data-panel="gallery"><span class="ico">👗</span>Коллекция</button>
+      <button type="button" data-panel="texts"><span class="ico">✏️</span>Тексты</button>
+      <button type="button" id="btn-logout"><span class="ico">⎋</span>Выход</button>
+    </nav>
+  </div>
+
+  <dialog id="dress-dialog" class="dress-dialog">
+    <form id="dress-form" method="dialog">
+      <header class="dialog-header">
+        <h2 id="dress-form-title">Платье</h2>
+        <button type="button" class="dialog-close" id="dress-close" aria-label="Закрыть">×</button>
+      </header>
+      <div class="dialog-body">
+        <input type="hidden" id="dress-id">
+        <img id="dress-img" class="dress-img" alt="" hidden>
+        <label class="file-pick" id="dress-file-pick">
+          <input type="file" id="dress-photo" accept="image/*">
+          <span id="dress-file-label">📷 Сменить фото</span>
+        </label>
+        <label for="dress-title">Название</label>
+        <input type="text" id="dress-title" required>
+        <label for="dress-desc">Описание</label>
+        <textarea id="dress-desc"></textarea>
+        <label for="dress-price">Цена покупки (₽)</label>
+        <input type="number" id="dress-price" min="0" step="1000">
+        <label class="check-row"><input type="checkbox" id="dress-active" checked> На сайте</label>
+        <label class="check-row"><input type="checkbox" id="dress-rent" checked> Аренда</label>
+        <label class="check-row"><input type="checkbox" id="dress-buy" checked> Покупка</label>
+        <div id="dress-status" class="status"></div>
+      </div>
+      <footer class="dialog-footer">
+        <button type="button" class="btn btn-danger" id="dress-delete" hidden>Удалить</button>
+        <button type="submit" class="btn btn-gold">Сохранить</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

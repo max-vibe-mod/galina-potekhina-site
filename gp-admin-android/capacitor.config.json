@@ -1,0 +1,11 @@
+{
+  "appId": "ru.galina.potekhina.admin",
+  "appName": "GP Админ",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
