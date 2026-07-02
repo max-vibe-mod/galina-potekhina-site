@@ -1,6 +1,6 @@
 ﻿<%
   const frameClass = typeof logoClass !== 'undefined' ? logoClass : 'logo-frame--sm';
-  const imgSrc = typeof src !== 'undefined' ? src : '/logo.png?v=9';
+  const imgSrc = typeof src !== 'undefined' ? src : '/logo.png?v=10';
   const imgAlt = typeof alt !== 'undefined' ? alt : 'РЎС‚СѓРґРёСЏ РїРѕС€РёРІР° Р“Р°Р»РёРЅС‹ РџРѕС‚РµС…РёРЅРѕР№';
   const imageClass = typeof imgClass !== 'undefined' ? imgClass : 'logo-img';
 %>
@@ -11,4 +11,5 @@
   <span class="logo-ornament logo-ornament--br" aria-hidden="true"></span>
   <img src="<%= imgSrc %>" alt="<%= imgAlt %>" class="<%= imageClass %>" loading="lazy">
 </span>
+
 
