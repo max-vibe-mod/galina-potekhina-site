@@ -2,7 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'gp_mobile_key';
-  const POLL_MS = 25000;
+  const POLL_MS = 20000;
   const API_BASE = (window.GP_API_BASE || '').replace(/\/$/, '');
 
   function apiUrl(path) {
@@ -24,9 +24,9 @@
     gallery: [],
     counts: { ordersNew: 0, rentalsNew: 0, mediaPending: 0 },
     lastPoll: null,
-    lastNotifyTotal: 0,
+    initialPollDone: false,
     pollTimer: null,
-    deferredInstall: null
+    notifyGranted: false
   };
 
   function getKey() {
@@ -98,6 +98,7 @@
 
   function showLogin() {
     stopPolling();
+    state.initialPollDone = false;
     $('#screen-app').hidden = true;
     $('#screen-app').classList.remove('screen--active');
     $('#screen-login').hidden = false;
@@ -112,7 +113,7 @@
     showApp();
     await refreshAll();
     startPolling();
-    requestPushPermission();
+    await requestPushPermission(true);
     navigateHash();
   }
 
@@ -123,7 +124,7 @@
   }
 
   function switchPanel(id) {
-    $$('.bottom-nav button[data-panel]').forEach((b) => {
+    $$('.bottom-nav .nav-btn[data-panel]').forEach((b) => {
       b.classList.toggle('is-active', b.dataset.panel === id);
     });
     $$('.panel').forEach((p) => p.classList.toggle('is-active', p.id === 'panel-' + id));
@@ -132,71 +133,163 @@
 
   function updateBadges() {
     const total = (state.counts.ordersNew || 0) + (state.counts.rentalsNew || 0) + (state.counts.mediaPending || 0);
-    const badge = $('#badge-total');
     const navBadge = $('#nav-badge');
     if (total > 0) {
-      badge.hidden = false;
-      badge.textContent = total;
       navBadge.hidden = false;
       navBadge.textContent = total;
     } else {
-      badge.hidden = true;
       navBadge.hidden = true;
     }
     $('#stat-orders').textContent = state.counts.ordersNew || 0;
     $('#stat-rentals').textContent = state.counts.rentalsNew || 0;
     $('#stat-media').textContent = state.counts.mediaPending || 0;
-    $('#header-sub').textContent = total > 0 ? `${total} новых заявок` : 'Всё спокойно';
+
+    const newTotal = (state.counts.ordersNew || 0) + (state.counts.rentalsNew || 0);
+    $('#header-sub').textContent = newTotal > 0
+      ? `${newTotal} новых заявок`
+      : 'Всё спокойно';
   }
 
-  function maybeNotify() {
-    const total = (state.counts.ordersNew || 0) + (state.counts.rentalsNew || 0);
-    if (total > state.lastNotifyTotal && state.lastNotifyTotal > 0) {
-      const diff = total - state.lastNotifyTotal;
-      pushNotify(`Новых заявок: ${diff}`, 'Откройте GP Админ');
+  function updateNotifyBanner() {
+    const banner = $('#notify-banner');
+    if (!banner) return;
+
+    if (state.notifyGranted) {
+      banner.hidden = false;
+      banner.classList.add('is-ok');
+      banner.innerHTML = `
+        <div class="notify-banner-text">
+          <strong>Уведомления включены</strong>
+          <span>О новых заказах и аренде сообщим сразу</span>
+        </div>`;
+      return;
     }
-    state.lastNotifyTotal = total;
+
+    banner.hidden = false;
+    banner.classList.remove('is-ok');
+    banner.innerHTML = `
+      <div class="notify-banner-text">
+        <strong>Уведомления выключены</strong>
+        <span>Включите — и вы узнаете о новых заказах сразу</span>
+      </div>
+      <button type="button" class="btn btn-primary btn-compact" id="btn-enable-push">Включить</button>`;
+    $('#btn-enable-push')?.addEventListener('click', () => requestPushPermission(true));
+  }
+
+  async function checkNotifyPermission() {
+    if (LocalNotifications) {
+      try {
+        const perm = await LocalNotifications.checkPermissions();
+        state.notifyGranted = perm.display === 'granted';
+        updateNotifyBanner();
+        return;
+      } catch (_) { /* fallback */ }
+    }
+    if ('Notification' in window) {
+      state.notifyGranted = Notification.permission === 'granted';
+    }
+    updateNotifyBanner();
+  }
+
+  function showOrderAlert(type, item) {
+    const isOrder = type === 'order';
+    const title = isOrder ? `Новый заказ №${item.id}` : `Новая аренда №${item.id}`;
+    const product = isOrder ? item.product_title : item.item_title;
+    const body = `${product}\n${item.customer_name} · ${item.phone}\n${formatMoney(item.amount)}`;
+
+    const dlg = $('#alert-dialog');
+    $('#alert-title').textContent = title;
+    $('#alert-body').textContent = body;
+    if (dlg && !dlg.open) dlg.showModal();
+
+    pushNotify(title, `${product} — ${item.customer_name}`);
+  }
+
+  function checkNewEvents(data) {
+    if (!state.initialPollDone) return;
+
+    for (const o of data.orders || []) {
+      showOrderAlert('order', o);
+    }
+    for (const r of data.rentals || []) {
+      showOrderAlert('rental', r);
+    }
   }
 
   async function pushNotify(title, body) {
-    if (LocalNotifications) {
+    if (LocalNotifications && state.notifyGranted) {
       try {
         await LocalNotifications.schedule({
           notifications: [{
             id: Date.now() % 2147483647,
             title,
             body,
-            schedule: { at: new Date(Date.now() + 300) }
+            channelId: 'gp-orders',
+            schedule: { at: new Date(Date.now() + 400) }
           }]
         });
         return;
       } catch (_) { /* fallback */ }
     }
-    showBrowserNotification(title, body);
-  }
-
-  function showBrowserNotification(title, body) {
-    if (!('Notification' in window)) return;
-    if (Notification.permission !== 'granted') return;
-    try {
-      new Notification(title, { body, icon: '/logo.png', badge: '/logo.png' });
-    } catch (_) { /* ignore */ }
-  }
-
-  async function requestPushPermission() {
-    if (LocalNotifications) {
-      try { await LocalNotifications.requestPermissions(); } catch (_) {}
-      return;
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        new Notification(title, { body, icon: 'logo.png' });
+      } catch (_) { /* ignore */ }
     }
-    if (!('Notification' in window)) return;
-    if (Notification.permission === 'granted') return;
-    try { await Notification.requestPermission(); } catch (_) {}
+  }
+
+  async function requestPushPermission(showFeedback) {
+    if (LocalNotifications) {
+      try {
+        await LocalNotifications.createChannel({
+          id: 'gp-orders',
+          name: 'Заявки студии',
+          description: 'Новые заказы и аренда',
+          importance: 5,
+          vibration: true
+        });
+        const perm = await LocalNotifications.requestPermissions();
+        state.notifyGranted = perm.display === 'granted';
+        updateNotifyBanner();
+        if (showFeedback && !state.notifyGranted) {
+          alert('Разрешите уведомления в настройках телефона для GP Админ');
+        }
+        return state.notifyGranted;
+      } catch (err) {
+        if (showFeedback) alert('Не удалось включить уведомления: ' + (err.message || err));
+      }
+    }
+
+    if (!('Notification' in window)) {
+      if (showFeedback) alert('Уведомления недоступны в этой среде');
+      return false;
+    }
+
+    if (Notification.permission === 'granted') {
+      state.notifyGranted = true;
+      updateNotifyBanner();
+      return true;
+    }
+
+    try {
+      const perm = await Notification.requestPermission();
+      state.notifyGranted = perm === 'granted';
+      updateNotifyBanner();
+      if (showFeedback && !state.notifyGranted) {
+        alert('Разрешите уведомления в настройках браузера');
+      }
+      return state.notifyGranted;
+    } catch (_) {
+      return false;
+    }
   }
 
   async function initNative() {
     if (window.Capacitor?.Plugins?.LocalNotifications) {
       LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
-      await requestPushPermission();
+      await checkNotifyPermission();
+    } else {
+      await checkNotifyPermission();
     }
   }
 
@@ -240,25 +333,29 @@
     items.sort((a, b) => String(b.date).localeCompare(String(a.date)));
 
     if (!items.length) {
-      list.innerHTML = '<p class="hint card">Заявок пока нет</p>';
+      list.innerHTML = '<p class="hint card">Заявок пока нет — всё чисто</p>';
       return;
     }
 
     for (const item of items) {
       const el = document.createElement('article');
       el.className = 'inbox-item' + (item.isNew ? ' inbox-item--new' : '');
+      const typePill = item.type === 'order' ? 'pill--order' : 'pill--rental';
+      const typeLabel = item.type === 'order' ? 'Заказ' : 'Аренда';
       el.innerHTML = `
         <div class="inbox-top">
           <strong>${escapeHtml(item.title)}</strong>
-          <span class="pill pill--${item.isNew ? 'new' : 'done'}">${item.isNew ? 'новая' : item.status}</span>
+          <span class="pill ${item.isNew ? 'pill--new' : 'pill--done'}">${item.isNew ? 'новая' : item.status}</span>
         </div>
+        <span class="pill ${typePill}" style="display:inline-block;margin-bottom:6px">${typeLabel}</span>
         <p class="inbox-sub">${escapeHtml(item.sub)}</p>
         <p class="inbox-who">${escapeHtml(item.who)} · <a href="tel:${item.phone}">${escapeHtml(item.phone)}</a></p>
         ${item.extra ? `<p class="inbox-extra">${escapeHtml(item.extra)}</p>` : ''}
         <p class="inbox-meta">${formatMoney(item.amount)} · ${formatDate(item.date)}</p>
-        ${item.isNew ? `<div class="inbox-actions">
-          <button type="button" class="btn btn-ghost btn-sm" data-confirm="${item.type}" data-id="${item.id}">✓ Принять</button>
-        </div>` : ''}`;
+        <div class="action-row">
+          ${item.isNew ? `<button type="button" class="btn btn-success btn-sm" data-confirm="${item.type}" data-id="${item.id}">✓ Принять</button>` : ''}
+          <button type="button" class="btn btn-danger btn-sm" data-delete="${item.type}" data-id="${item.id}">Удалить</button>
+        </div>`;
       list.appendChild(el);
     }
 
@@ -281,6 +378,24 @@
         }
       });
     });
+
+    list.querySelectorAll('[data-delete]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const type = btn.dataset.delete;
+        const id = btn.dataset.id;
+        const label = type === 'order' ? 'заказ' : 'заявку на аренду';
+        if (!confirm(`Удалить ${label} №${id}? Это действие нельзя отменить.`)) return;
+        btn.disabled = true;
+        try {
+          await api(`/${type === 'order' ? 'orders' : 'rentals'}/${id}`, { method: 'DELETE' });
+          await pollEvents();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
   }
 
   function renderGallery() {
@@ -288,7 +403,7 @@
     list.innerHTML = '';
 
     if (!state.gallery.length) {
-      list.innerHTML = '<p class="hint card">Коллекция пуста</p>';
+      list.innerHTML = '<p class="hint card">Коллекция пуста — добавьте первое платье</p>';
       return;
     }
 
@@ -327,11 +442,12 @@
   async function pollEvents() {
     const since = state.lastPoll || '1970-01-01 00:00:00';
     const data = await api('/events?since=' + encodeURIComponent(since));
+    checkNewEvents(data);
     state.counts = data.counts || state.counts;
     state.lastPoll = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    state.initialPollDone = true;
     renderInbox(data);
     updateBadges();
-    maybeNotify();
   }
 
   async function refreshAll() {
@@ -456,48 +572,10 @@
     }
   }
 
-  function initPwa() {
-    if (window.Capacitor) return;
-    const banner = $('#install-banner');
-    if (!banner) return;
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }).catch(() => {});
-    }
-
-    const hint = $('#install-hint');
-    const btnInstall = $('#btn-install');
-    if (!hint || !btnInstall) return;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      state.deferredInstall = e;
-      banner.hidden = false;
-      btnInstall.hidden = false;
-      hint.textContent = 'Нажмите «Установить» — иконка появится на главном экране.';
-    });
-
-    btnInstall.addEventListener('click', async () => {
-      if (!state.deferredInstall) return;
-      state.deferredInstall.prompt();
-      await state.deferredInstall.userChoice;
-      state.deferredInstall = null;
-      banner.hidden = true;
-    });
-
-    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-    if (isIos && !standalone) {
-      banner.hidden = false;
-      hint.textContent = 'iPhone: Поделиться ↗ → «На экран Домой».';
-    }
-  }
-
   function init() {
     initNative();
-    initPwa();
 
-    $$('.bottom-nav button[data-panel]').forEach((btn) => {
+    $$('.bottom-nav .nav-btn[data-panel]').forEach((btn) => {
       btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
     });
 
@@ -506,8 +584,13 @@
     });
 
     $('#btn-logout').addEventListener('click', () => {
+      if (!confirm('Выйти из панели?')) return;
       clearKey();
       showLogin();
+    });
+
+    $('#btn-refresh').addEventListener('click', () => {
+      refreshAll().catch((err) => alert(err.message));
     });
 
     $('#btn-new-dress').addEventListener('click', () => openDressForm(null));
@@ -524,7 +607,12 @@
     });
 
     $('#btn-save-texts').addEventListener('click', saveTexts);
-    $('#btn-enable-push').addEventListener('click', requestPushPermission);
+
+    $('#alert-close').addEventListener('click', () => $('#alert-dialog').close());
+    $('#alert-open-inbox').addEventListener('click', () => {
+      $('#alert-dialog').close();
+      switchPanel('inbox');
+    });
 
     window.addEventListener('hashchange', navigateHash);
 

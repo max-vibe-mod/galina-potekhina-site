@@ -294,4 +294,18 @@ router.post('/rentals/:id/status', (req, res) => {
   });
 });
 
+router.delete('/orders/:id', (req, res) => {
+  const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
+  if (!order) return res.status(404).json({ error: 'Заказ не найден' });
+  db.prepare('DELETE FROM orders WHERE id = ?').run(order.id);
+  res.json({ ok: true });
+});
+
+router.delete('/rentals/:id', (req, res) => {
+  const booking = db.prepare('SELECT * FROM rental_bookings WHERE id = ?').get(req.params.id);
+  if (!booking) return res.status(404).json({ error: 'Аренда не найдена' });
+  db.prepare('DELETE FROM rental_bookings WHERE id = ?').run(booking.id);
+  res.json({ ok: true });
+});
+
 module.exports = router;

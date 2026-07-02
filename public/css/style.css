@@ -2200,7 +2200,8 @@ h1, h2, h3 {
 
   .logo-img { height: 44px; max-width: 130px; }
   .logo-frame--sm { padding: 4px 6px; border-radius: 12px; }
-  .logo-frame--hero-scale { padding: 14px 16px; border-radius: 12px; }
+  .logo-frame--hero-scale:not(.logo-frame--round) { padding: 14px 16px; border-radius: 12px; }
+  .logo-frame--round.logo-frame--hero-scale { padding: 0; border-radius: 0; }
   .logo-frame--hero-scale .logo-img {
     height: min(220px, 50vw);
     max-width: min(340px, 82vw);

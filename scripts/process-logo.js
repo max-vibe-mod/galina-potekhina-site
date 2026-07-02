@@ -5,30 +5,38 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-const userLogo = path.join(
+const assetsDir = path.join(
   process.env.USERPROFILE || '',
-  '.cursor', 'projects', 'c-Users-vladp-OneDrive-Desktop', 'assets',
-  'c__Users_vladp_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-a4212fca-8c22-4bc5-ac77-7161fadc71f3.png'
+  '.cursor', 'projects', 'c-Users-vladp-OneDrive-Desktop', 'assets'
 );
+
+const candidates = [
+  path.join(assetsDir, 'c__Users_vladp_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-474f79f4-f28d-4d61-ae79-866ce3171fdf.png'),
+  path.join(assetsDir, 'c__Users_vladp_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-a4212fca-8c22-4bc5-ac77-7161fadc71f3.png'),
+  path.join(__dirname, '..', 'логотипы', 'logo-studia-poshiv-final.png')
+];
 
 const out = path.join(__dirname, '..', 'public', 'logo.png');
 const outIcon = path.join(__dirname, '..', 'public', 'admin', 'icon-192.png');
 const outCopy = path.join(__dirname, '..', 'логотипы', 'logo-studia-poshiv-final.png');
 
-const src = [userLogo, path.join(__dirname, '..', 'логотипы', 'logo-studia-poshiv-final.png')]
-  .find((p) => fs.existsSync(p));
-
+const src = candidates.find((p) => fs.existsSync(p));
 if (!src) {
   console.error('Логотип не найден');
   process.exit(1);
 }
 
 const SIZE = 512;
+const CREAM = '#ede6d8';
+const GOLD = '#8f7340';
+
 const mask = Buffer.from(`<svg width="${SIZE}" height="${SIZE}"><circle cx="256" cy="256" r="252" fill="white"/></svg>`);
+
 const textSvg = Buffer.from(`<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg">
-  <rect x="24" y="102" width="196" height="128" rx="4" fill="#f0e8dc"/>
-  <text x="122" y="148" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="600" fill="#8f7340">Студия пошива</text>
-  <text x="122" y="182" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="600" fill="#8f7340">Галины Потехиной</text>
+  <ellipse cx="118" cy="168" rx="108" ry="78" fill="${CREAM}"/>
+  <text x="118" y="142" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="700" fill="${GOLD}">Студия пошива</text>
+  <text x="118" y="172" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="700" fill="${GOLD}">Галины</text>
+  <text x="118" y="198" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="700" fill="${GOLD}">Потехиной</text>
 </svg>`);
 
 async function run() {
@@ -60,7 +68,7 @@ async function run() {
 
   fs.mkdirSync(path.dirname(outCopy), { recursive: true });
   fs.copyFileSync(out, outCopy);
-  console.log('Логотип готов:', out);
+  console.log('Логотип готов:', out, 'из', src);
 }
 
 run().catch((e) => {
