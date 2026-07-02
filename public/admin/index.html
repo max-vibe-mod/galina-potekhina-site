@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1a1814">
-  <title>GP РђРґРјРёРЅ</title>
+  <title>GP Админ</title>
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
   <section id="screen-login" class="screen screen--active">
     <div class="login-wrap">
       <img src="logo.png?v=9" alt="" class="login-logo" width="96" height="96">
-      <h1>РЎС‚СѓРґРёСЏ Р“Р°Р»РёРЅС‹ РџРѕС‚РµС…РёРЅРѕР№</h1>
-      <p class="login-sub">РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ СЃР°Р№С‚РѕРј</p>
-      <label for="mobile-key">РљР»СЋС‡ РґРѕСЃС‚СѓРїР°</label>
-      <input type="password" id="mobile-key" autocomplete="off" placeholder="Р’СЃС‚Р°РІСЊС‚Рµ РєР»СЋС‡">
+      <h1>Студия Галины Потехиной</h1>
+      <p class="login-sub">Панель управления сайтом</p>
+      <label for="mobile-key">Ключ доступа</label>
+      <input type="password" id="mobile-key" autocomplete="off" placeholder="Вставьте ключ">
       <button type="button" class="btn btn-primary btn-lg" id="btn-login">
-        <span class="btn-icon" aria-hidden="true">в†’</span>
-        Р’РѕР№С‚Рё РІ РїР°РЅРµР»СЊ
+        <span class="btn-icon" aria-hidden="true">→</span>
+        Войти в панель
       </button>
       <div id="login-status" class="status"></div>
     </div>
@@ -27,36 +27,36 @@
     <header class="app-header">
       <img src="logo.png?v=9" alt="" class="header-logo" width="44" height="44">
       <div class="app-header-text">
-        <h1>РђРґРјРёРЅ-РїР°РЅРµР»СЊ</h1>
-        <p id="header-sub">Р—Р°РіСЂСѓР·РєР°вЂ¦</p>
+        <h1>Админ-панель</h1>
+        <p id="header-sub">Загрузка...</p>
       </div>
-      <button type="button" class="btn-icon-only" id="btn-refresh" title="РћР±РЅРѕРІРёС‚СЊ">в†»</button>
+      <button type="button" class="btn-icon-only" id="btn-refresh" title="Обновить">↻</button>
     </header>
 
     <main>
       <section id="panel-inbox" class="panel is-active">
         <div id="notify-banner" class="notify-banner" hidden>
           <div class="notify-banner-text">
-            <strong>РЈРІРµРґРѕРјР»РµРЅРёСЏ РІС‹РєР»СЋС‡РµРЅС‹</strong>
-            <span>Р’РєР»СЋС‡РёС‚Рµ вЂ” Рё РІС‹ СѓР·РЅР°РµС‚Рµ Рѕ РЅРѕРІС‹С… Р·Р°РєР°Р·Р°С… СЃСЂР°Р·Сѓ</span>
+            <strong>Уведомления выключены</strong>
+            <span>Включите и вы узнаете о новых заказах сразу</span>
           </div>
-          <button type="button" class="btn btn-primary btn-compact" id="btn-enable-push">Р’РєР»СЋС‡РёС‚СЊ</button>
+          <button type="button" class="btn btn-primary btn-compact" id="btn-enable-push">Включить</button>
         </div>
 
         <div class="card stats-card">
-          <h2>Р—Р°СЏРІРєРё</h2>
+          <h2>Заявки</h2>
           <div class="stat-row">
             <div class="stat stat--orders">
               <span id="stat-orders">0</span>
-              <small>Р—Р°РєР°Р·С‹</small>
+              <small>Заказы</small>
             </div>
             <div class="stat stat--rentals">
               <span id="stat-rentals">0</span>
-              <small>РђСЂРµРЅРґР°</small>
+              <small>Аренда</small>
             </div>
             <div class="stat stat--media">
               <span id="stat-media">0</span>
-              <small>Р—Р°РїСЂРѕСЃС‹</small>
+              <small>Запросы</small>
             </div>
           </div>
         </div>
@@ -67,12 +67,12 @@
       <section id="panel-gallery" class="panel">
         <div class="card card--action">
           <div>
-            <h2>РљРѕР»Р»РµРєС†РёСЏ РЅР° СЃР°Р№С‚Рµ</h2>
-            <p class="card-hint">Р¤РѕС‚Рѕ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРѕРґРіРѕРЅСЏСЋС‚СЃСЏ РїРѕРґ СЂР°Р·РјРµСЂ РіР°Р»РµСЂРµРё</p>
+            <h2>Коллекция на сайте</h2>
+            <p class="card-hint">Фото автоматически подгоняются под размер галереи</p>
           </div>
           <button type="button" class="btn btn-primary" id="btn-new-dress">
             <span class="btn-icon">+</span>
-            Р”РѕР±Р°РІРёС‚СЊ РїР»Р°С‚СЊРµ
+            Добавить платье
           </button>
         </div>
         <div id="gallery-list" class="dress-list"></div>
@@ -80,41 +80,41 @@
 
       <section id="panel-texts" class="panel">
         <div class="card">
-          <h2>РўРµРєСЃС‚С‹ Рё РєРѕРЅС‚Р°РєС‚С‹</h2>
-          <p class="card-hint">РР·РјРµРЅРµРЅРёСЏ СЃСЂР°Р·Сѓ РїРѕСЏРІСЏС‚СЃСЏ РЅР° СЃР°Р№С‚Рµ</p>
-          <label for="set-phone">РўРµР»РµС„РѕРЅ</label>
+          <h2>Тексты и контакты</h2>
+          <p class="card-hint">Изменения сразу появятся на сайте</p>
+          <label for="set-phone">Телефон</label>
           <input type="tel" id="set-phone" inputmode="tel">
-          <label for="set-hero-title">Р—Р°РіРѕР»РѕРІРѕРє РЅР° РіР»Р°РІРЅРѕР№</label>
+          <label for="set-hero-title">Заголовок на главной</label>
           <input type="text" id="set-hero-title">
-          <label for="set-hero-sub">РџРѕРґР·Р°РіРѕР»РѕРІРѕРє</label>
+          <label for="set-hero-sub">Подзаголовок</label>
           <input type="text" id="set-hero-sub">
-          <label for="set-rental-title">РђСЂРµРЅРґР° вЂ” Р·Р°РіРѕР»РѕРІРѕРє</label>
+          <label for="set-rental-title">Аренда - заголовок</label>
           <input type="text" id="set-rental-title">
-          <label for="set-rental-text">РђСЂРµРЅРґР° вЂ” С‚РµРєСЃС‚</label>
+          <label for="set-rental-text">Аренда - текст</label>
           <textarea id="set-rental-text" rows="4"></textarea>
-          <button type="button" class="btn btn-primary btn-lg" id="btn-save-texts">РЎРѕС…СЂР°РЅРёС‚СЊ РЅР° СЃР°Р№С‚Рµ</button>
+          <button type="button" class="btn btn-primary btn-lg" id="btn-save-texts">Сохранить на сайте</button>
           <div id="texts-status" class="status"></div>
         </div>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Р Р°Р·РґРµР»С‹">
+    <nav class="bottom-nav" aria-label="Разделы">
       <button type="button" data-panel="inbox" class="nav-btn is-active">
-        <span class="nav-ico" aria-hidden="true">рџ“‹</span>
-        <span class="nav-label">Р—Р°СЏРІРєРё</span>
+        <span class="nav-ico" aria-hidden="true">📋</span>
+        <span class="nav-label">Заявки</span>
         <span class="nav-badge" id="nav-badge" hidden>0</span>
       </button>
       <button type="button" data-panel="gallery" class="nav-btn">
-        <span class="nav-ico" aria-hidden="true">рџ‘—</span>
-        <span class="nav-label">РљРѕР»Р»РµРєС†РёСЏ</span>
+        <span class="nav-ico" aria-hidden="true">👗</span>
+        <span class="nav-label">Коллекция</span>
       </button>
       <button type="button" data-panel="texts" class="nav-btn">
-        <span class="nav-ico" aria-hidden="true">вњЋ</span>
-        <span class="nav-label">РўРµРєСЃС‚С‹</span>
+        <span class="nav-ico" aria-hidden="true">✎</span>
+        <span class="nav-label">Тексты</span>
       </button>
       <button type="button" id="btn-logout" class="nav-btn nav-btn--muted">
-        <span class="nav-ico" aria-hidden="true">вЋ‹</span>
-        <span class="nav-label">Р’С‹С…РѕРґ</span>
+        <span class="nav-ico" aria-hidden="true">⎋</span>
+        <span class="nav-label">Выход</span>
       </button>
     </nav>
   </div>
@@ -122,42 +122,42 @@
   <dialog id="dress-dialog" class="dress-dialog">
     <form id="dress-form" method="dialog">
       <header class="dialog-header">
-        <h2 id="dress-form-title">РџР»Р°С‚СЊРµ</h2>
-        <button type="button" class="dialog-close" id="dress-close" aria-label="Р—Р°РєСЂС‹С‚СЊ">Г—</button>
+        <h2 id="dress-form-title">Платье</h2>
+        <button type="button" class="dialog-close" id="dress-close" aria-label="Закрыть">×</button>
       </header>
       <div class="dialog-body">
         <input type="hidden" id="dress-id">
         <img id="dress-img" class="dress-img" alt="" hidden>
         <label class="file-pick" id="dress-file-pick">
           <input type="file" id="dress-photo" accept="image/*">
-          <span id="dress-file-label">рџ“· Р’С‹Р±СЂР°С‚СЊ РёР»Рё СЃРјРµРЅРёС‚СЊ С„РѕС‚Рѕ</span>
+          <span id="dress-file-label">📷 Выбрать или сменить фото</span>
         </label>
-        <label for="dress-title">РќР°Р·РІР°РЅРёРµ</label>
+        <label for="dress-title">Название</label>
         <input type="text" id="dress-title" required>
-        <label for="dress-desc">РћРїРёСЃР°РЅРёРµ</label>
+        <label for="dress-desc">Описание</label>
         <textarea id="dress-desc" rows="3"></textarea>
-        <label for="dress-price">Р¦РµРЅР° РїРѕРєСѓРїРєРё (в‚Ѕ)</label>
+        <label for="dress-price">Цена покупки (₽)</label>
         <input type="number" id="dress-price" min="0" step="1000" inputmode="numeric">
-        <label class="check-row"><input type="checkbox" id="dress-active" checked> РџРѕРєР°Р·С‹РІР°С‚СЊ РЅР° СЃР°Р№С‚Рµ</label>
-        <label class="check-row"><input type="checkbox" id="dress-rent" checked> Р”РѕСЃС‚СѓРїРЅРѕ РІ Р°СЂРµРЅРґСѓ</label>
-        <label class="check-row"><input type="checkbox" id="dress-buy" checked> Р”РѕСЃС‚СѓРїРЅРѕ Рє РїРѕРєСѓРїРєРµ</label>
+        <label class="check-row"><input type="checkbox" id="dress-active" checked> Показывать на сайте</label>
+        <label class="check-row"><input type="checkbox" id="dress-rent" checked> Доступно в аренду</label>
+        <label class="check-row"><input type="checkbox" id="dress-buy" checked> Доступно к покупке</label>
         <div id="dress-status" class="status"></div>
       </div>
       <footer class="dialog-footer">
-        <button type="button" class="btn btn-danger" id="dress-delete" hidden>РЈРґР°Р»РёС‚СЊ</button>
-        <button type="submit" class="btn btn-primary">РЎРѕС…СЂР°РЅРёС‚СЊ</button>
+        <button type="button" class="btn btn-danger" id="dress-delete" hidden>Удалить</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
       </footer>
     </form>
   </dialog>
 
   <dialog id="alert-dialog" class="alert-dialog">
     <div class="alert-dialog-inner">
-      <div class="alert-icon" aria-hidden="true">рџ””</div>
-      <h2 id="alert-title">РќРѕРІР°СЏ Р·Р°СЏРІРєР°</h2>
+      <div class="alert-icon" aria-hidden="true">🔔</div>
+      <h2 id="alert-title">Новая заявка</h2>
       <p id="alert-body"></p>
       <div class="alert-actions">
-        <button type="button" class="btn btn-ghost" id="alert-close">Р—Р°РєСЂС‹С‚СЊ</button>
-        <button type="button" class="btn btn-primary" id="alert-open-inbox">РћС‚РєСЂС‹С‚СЊ Р·Р°СЏРІРєРё</button>
+        <button type="button" class="btn btn-ghost" id="alert-close">Закрыть</button>
+        <button type="button" class="btn btn-primary" id="alert-open-inbox">Открыть заявки</button>
       </div>
     </div>
   </dialog>
