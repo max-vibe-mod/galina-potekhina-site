@@ -1,0 +1,104 @@
+<article class="gallery-card reveal gallery-card--lux<%= typeof cardClass !== 'undefined' ? ' ' + cardClass : '' %>" style="--reveal-delay: <%= i * 0.1 %>s">
+
+  <div class="gallery-photo-frame lux-frame lux-frame--card<%= typeof frameClass !== 'undefined' ? ' ' + frameClass : '' %>">
+
+    <div class="gallery-img-wrap<%= typeof imgClass !== 'undefined' ? ' ' + imgClass : '' %>">
+
+      <img src="<%= item.image_path %>?v=7" alt="<%= item.title %> — студия Galina Potekhina" loading="lazy">
+
+      <div class="gallery-overlay">
+
+        <div class="gallery-overlay-info">
+
+          <h3><%= item.title %></h3>
+
+          <% if (item.for_rent && item.rent_price_day > 0) { %>
+
+            <p class="gallery-price"><%= item.rent_price_day.toLocaleString('ru-RU') %> ₽ <span>/ сутки аренда</span></p>
+
+          <% } %>
+
+          <% if (item.price > 0) { %>
+
+            <p class="gallery-price gallery-price--buy"><%= item.price.toLocaleString('ru-RU') %> ₽ <span>покупка</span></p>
+
+          <% } %>
+
+        </div>
+
+        <div class="gallery-overlay-btns">
+
+          <% if (item.for_rent) { %>
+
+            <a href="/rent/<%= item.id %>" class="btn btn-luxury btn-sm">Арендовать</a>
+
+          <% } %>
+
+          <% if (item.price > 0) { %>
+
+            <button type="button" class="btn btn-outline btn-on-dark btn-sm js-buy-dress"
+
+              data-title="<%= item.title %>"
+
+              data-price="<%= item.price %>">
+
+              Купить платье
+
+            </button>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="gallery-card-body gallery-card-body--mobile<%= showMobileBody ? ' gallery-card-body--visible' : '' %>">
+
+    <h3><%= item.title %></h3>
+
+    <% if (item.description) { %><p class="gallery-desc"><%= item.description %></p><% } %>
+
+    <% if (item.for_rent && item.rent_price_day > 0) { %>
+
+      <p class="gallery-price"><%= item.rent_price_day.toLocaleString('ru-RU') %> ₽ / сутки</p>
+
+    <% } %>
+
+    <% if (item.price > 0) { %>
+
+      <p class="gallery-price"><%= item.price.toLocaleString('ru-RU') %> ₽</p>
+
+    <% } %>
+
+    <div class="gallery-card-body-btns">
+
+      <% if (item.for_rent) { %>
+
+        <a href="/rent/<%= item.id %>" class="btn btn-luxury btn-sm">Арендовать</a>
+
+      <% } %>
+
+      <% if (item.price > 0) { %>
+
+        <button type="button" class="btn btn-outline btn-sm js-buy-dress"
+
+          data-title="<%= item.title %>"
+
+          data-price="<%= item.price %>">
+
+          Купить платье
+
+        </button>
+
+      <% } %>
+
+    </div>
+
+  </div>
+
+</article>
+

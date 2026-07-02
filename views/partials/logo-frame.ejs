@@ -1,0 +1,13 @@
+<%
+  const frameClass = typeof logoClass !== 'undefined' ? logoClass : 'logo-frame--sm';
+  const imgSrc = typeof src !== 'undefined' ? src : '/logo.png';
+  const imgAlt = typeof alt !== 'undefined' ? alt : 'Студия пошива Галины Потехиной';
+  const imageClass = typeof imgClass !== 'undefined' ? imgClass : 'logo-img';
+%>
+<span class="logo-frame logo-frame--round logo-frame--ornate <%= frameClass %>">
+  <span class="logo-ornament logo-ornament--tl" aria-hidden="true"></span>
+  <span class="logo-ornament logo-ornament--tr" aria-hidden="true"></span>
+  <span class="logo-ornament logo-ornament--bl" aria-hidden="true"></span>
+  <span class="logo-ornament logo-ornament--br" aria-hidden="true"></span>
+  <img src="<%= imgSrc %>" alt="<%= imgAlt %>" class="<%= imageClass %>" loading="lazy">
+</span>

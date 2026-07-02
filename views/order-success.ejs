@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container success-container">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h1>Заказ №<%= order.id %> оформлен!</h1>
+      <div class="ornament-line center"></div>
+      <p>Товар: <strong><%= order.product_title %></strong></p>
+      <p>Сумма к оплате: <strong><%= order.amount.toLocaleString('ru-RU') %> ₽</strong></p>
+      <% if (order.bonus_used > 0) { %><p>Использовано бонусов: <%= order.bonus_used %> ₽</p><% } %>
+      <% if (bonusEarned > 0) { %><p class="bonus-earned">Начислено бонусов: +<%= bonusEarned %> ₽</p><% } %>
+      <% if (order.email) { %>
+        <% if (emailSent) { %>
+          <p class="alert alert-success">Чек отправлен на <%= order.email %></p>
+        <% } else { %>
+          <p class="alert alert-info">Чек будет отправлен на <%= order.email %> после настройки почты в .env.local</p>
+        <% } %>
+      <% } %>
+      <div class="success-actions">
+        <a href="/" class="btn btn-gold">На главную</a>
+        <% if (user && !user.isAdmin) { %>
+          <a href="/account" class="btn btn-outline">Личный кабинет</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

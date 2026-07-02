@@ -1,0 +1,140 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Клиент: <%= user.login %></h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin/users' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+      </nav>
+    </div>
+
+    <p><a href="/admin/users">← К списку клиентов</a></p>
+
+    <% if (message === 'saved') { %><div class="alert alert-success">Данные сохранены</div><% } %>
+    <% if (message === 'bonus') { %><div class="alert alert-success">Бонусы обновлены</div><% } %>
+    <% if (error === 'login') { %><div class="alert alert-error">Этот логин уже занят</div><% } %>
+
+    <div class="admin-two-col">
+      <div class="admin-form-card">
+        <h2>Профиль клиента</h2>
+        <form method="POST" action="/admin/users/<%= user.id %>/update" class="form">
+          <div class="form-group">
+            <label for="login">Логин</label>
+            <input type="text" id="login" name="login" value="<%= user.login %>" required>
+          </div>
+          <div class="form-group">
+            <label for="full_name">Имя / ФИО</label>
+            <input type="text" id="full_name" name="full_name" value="<%= user.full_name || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<%= user.email || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
+          </div>
+          <button type="submit" class="btn btn-gold">Сохранить</button>
+        </form>
+      </div>
+
+      <div class="admin-form-card">
+        <h2>Бонусы</h2>
+        <p class="hint">Текущий баланс: <strong><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> ₽</strong></p>
+
+        <form method="POST" action="/admin/users/<%= user.id %>/bonus" class="form bonus-form">
+          <input type="hidden" name="action" value="add">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Начислить (₽)</label>
+              <input type="number" name="amount" min="1" step="1" placeholder="300">
+            </div>
+            <div class="form-group">
+              <label>Комментарий</label>
+              <input type="text" name="note" placeholder="Причина">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gold btn-sm">Начислить</button>
+        </form>
+
+        <form method="POST" action="/admin/users/<%= user.id %>/bonus" class="form bonus-form mt-md">
+          <input type="hidden" name="action" value="deduct">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Списать (₽)</label>
+              <input type="number" name="amount" min="1" step="1">
+            </div>
+            <div class="form-group">
+              <label>Комментарий</label>
+              <input type="text" name="note" placeholder="Причина списания">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-outline btn-sm">Списать</button>
+        </form>
+
+        <form method="POST" action="/admin/users/<%= user.id %>/bonus" class="form bonus-form mt-md">
+          <input type="hidden" name="action" value="set">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Установить баланс (₽)</label>
+              <input type="number" name="set_balance" min="0" step="1" value="<%= Math.floor(bonusBalance) %>">
+            </div>
+            <div class="form-group">
+              <label>Комментарий</label>
+              <input type="text" name="note">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-outline btn-sm">Установить</button>
+        </form>
+
+        <form method="POST" action="/admin/users/<%= user.id %>/bonus" class="mt-md" onsubmit="return confirm('Обнулить все бонусы клиента?')">
+          <input type="hidden" name="action" value="reset">
+          <input type="hidden" name="note" value="Полный сброс администратором">
+          <button type="submit" class="btn btn-danger btn-sm">Обнулить все бонусы</button>
+        </form>
+      </div>
+    </div>
+
+    <% if (bonusAdjustments.length > 0) { %>
+      <h2 class="mt-lg">История корректировок (админ)</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Дата</th><th>Действие</th><th>Сумма</th><th>Комментарий</th></tr></thead>
+          <tbody>
+            <% bonusAdjustments.forEach(a => { %>
+              <tr>
+                <td><%= new Date(a.created_at).toLocaleString('ru-RU') %></td>
+                <td><%= a.action %></td>
+                <td><%= a.amount %> ₽</td>
+                <td><%= a.note || '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <h2 class="mt-lg">Заказы клиента</h2>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>№</th><th>Товар</th><th>Сумма</th><th>Статус</th><th></th></tr></thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><%= o.id %></td>
+              <td><%= o.product_title %></td>
+              <td><%= o.amount.toLocaleString('ru-RU') %> ₽</td>
+              <td><%= o.status %></td>
+              <td><a href="/admin/orders/<%= o.id %>">Открыть</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

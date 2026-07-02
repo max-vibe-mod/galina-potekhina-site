@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Клиенты и бонусы</h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin/users' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+      </nav>
+    </div>
+
+    <% if (message) { %><div class="alert alert-success">Готово</div><% } %>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-num"><%= Math.floor(bonusStats.totalActive).toLocaleString('ru-RU') %></span>
+        <span class="stat-label">Активных бонусов (₽)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num"><%= bonusStats.usersWithBonus %></span>
+        <span class="stat-label">Клиентов с бонусами</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num"><%= Math.floor(bonusStats.totalIssued).toLocaleString('ru-RU') %></span>
+        <span class="stat-label">Всего начислено (₽)</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Логин</th><th>ФИО</th><th>Бонусы</th><th>Актив. заказы</th><th>Регистрация</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(u => { %>
+            <tr>
+              <td><%= u.id %></td>
+              <td><strong><%= u.login %></strong></td>
+              <td><%= u.full_name || '—' %></td>
+              <td><%= Math.floor(u.bonus_balance || 0).toLocaleString('ru-RU') %> ₽</td>
+              <td><%= u.active_orders || 0 %></td>
+              <td><%= new Date(u.created_at).toLocaleDateString('ru-RU') %></td>
+              <td><a href="/admin/users/<%= u.id %>" class="btn btn-outline btn-sm">Управление</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

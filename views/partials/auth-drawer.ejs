@@ -1,0 +1,52 @@
+<div class="auth-drawer" id="auth-drawer" aria-hidden="true">
+  <div class="auth-drawer-backdrop" data-auth-close></div>
+  <aside class="auth-drawer-panel" role="dialog" aria-labelledby="auth-drawer-title">
+    <button type="button" class="auth-drawer-close" data-auth-close aria-label="Закрыть">&times;</button>
+    <div class="auth-drawer-head">
+      <span class="auth-drawer-label">Galina Potekhina</span>
+      <h2 id="auth-drawer-title">Вход / Регистрация</h2>
+    </div>
+
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-auth-tab="login">Вход</button>
+      <button type="button" class="auth-tab" data-auth-tab="register">Регистрация</button>
+    </div>
+
+    <% if (typeof authError !== 'undefined' && authError) { %>
+      <div class="alert alert-error auth-drawer-error"><%= authError %></div>
+    <% } %>
+
+    <div class="auth-panel active" data-auth-panel="login">
+      <form method="POST" action="/login" class="form form-luxury">
+        <input type="hidden" name="next" value="<%= typeof next !== 'undefined' ? next : '/' %>">
+        <div class="form-group">
+          <label for="modal-login">Логин</label>
+          <input type="text" id="modal-login" name="login" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="modal-password">Пароль</label>
+          <input type="password" id="modal-password" name="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-luxury btn-block">Войти</button>
+      </form>
+    </div>
+
+    <div class="auth-panel" data-auth-panel="register">
+      <form method="POST" action="/register" class="form form-luxury">
+        <div class="form-group">
+          <label for="modal-reg-login">Логин</label>
+          <input type="text" id="modal-reg-login" name="login" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="modal-reg-pass">Пароль</label>
+          <input type="password" id="modal-reg-pass" name="password" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label for="modal-reg-pass2">Повторите пароль</label>
+          <input type="password" id="modal-reg-pass2" name="password2" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-luxury btn-block">Создать аккаунт</button>
+      </form>
+    </div>
+  </aside>
+</div>

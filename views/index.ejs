@@ -1,0 +1,381 @@
+<%- include('partials/header') %>
+
+<% const collectionDresses = locals.eveningGallery || []; %>
+
+
+
+<section class="hero hero--video">
+
+  <div class="hero-bg hero-bg--video" aria-hidden="true">
+
+    <video class="hero-video" id="hero-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+
+      <source src="/videos/hero-bg.mp4?v=2" type="video/mp4">
+
+    </video>
+
+    <div class="hero-video-overlay"></div>
+
+  </div>
+
+  <div class="container hero-content">
+
+    <div class="hero-logo-wrap reveal">
+
+      <%- include('partials/logo-frame', { logoClass: 'logo-frame--sm logo-frame--hero-scale', alt: 'Студия пошива Галины Потехиной' }) %>
+
+    </div>
+
+    <p class="hero-eyebrow reveal reveal-delay-1">Студия · Владивосток</p>
+
+    <h1 class="reveal reveal-delay-2"><%= settings.hero_title %></h1>
+
+    <p class="hero-sub reveal reveal-delay-3"><%= settings.hero_subtitle %></p>
+
+
+
+    <div class="hero-paths reveal reveal-delay-4">
+
+      <a href="#tailoring" class="hero-path-card">
+
+        <span class="hero-path-title">Пошив на заказ</span>
+
+        <span class="hero-path-desc">Индивидуальное платье по меркам</span>
+
+      </a>
+
+      <a href="#collection-buy" class="hero-path-card">
+
+        <span class="hero-path-title">Купить платье</span>
+
+        <span class="hero-path-desc">Готовые модели из коллекции</span>
+
+      </a>
+
+      <a href="#collection-rent" class="hero-path-card">
+
+        <span class="hero-path-title">Аренда</span>
+
+        <span class="hero-path-desc">Платья напрокат на торжество</span>
+
+      </a>
+
+    </div>
+
+
+
+    <div class="hero-actions reveal reveal-delay-5">
+
+      <a href="#contacts" class="btn btn-outline btn-lg hero-btn-outline">Связаться с нами</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<%- include('partials/section-divider') %>
+
+
+
+<section id="about" class="section about-section">
+
+  <div class="container">
+
+    <div class="section-head reveal">
+
+      <span class="section-label">Студия</span>
+
+      <h2><%= settings.about_title || 'О студии' %></h2>
+
+    </div>
+
+    <div class="about-grid">
+
+      <div class="about-visual reveal">
+
+        <div class="about-photo-frame lux-panel">
+
+          <%- include('partials/logo-frame', {
+
+            logoClass: 'logo-frame--about',
+
+            src: settings.about_image || '/logo.png',
+
+            alt: 'Galina Potekhina — студия пошива',
+
+            imgClass: 'about-studio-logo'
+
+          }) %>
+
+        </div>
+
+      </div>
+
+      <div class="about-content reveal reveal-delay-1">
+
+        <div class="about-text">
+
+          <p><%= settings.about_text %></p>
+
+          <% if (settings.about_text_2) { %><p><%= settings.about_text_2 %></p><% } %>
+
+        </div>
+
+        <div class="about-features">
+
+          <div class="about-feature"><span>01</span><p>Индивидуальный пошив по меркам</p></div>
+
+          <div class="about-feature"><span>02</span><p>Премиальные материалы и ручная работа</p></div>
+
+          <div class="about-feature"><span>03</span><p>Примерки и сопровождение заказа</p></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="process-timeline reveal">
+
+      <% const timeline = [
+
+        { num: '01', title: 'Консультация', desc: 'Обсуждаем модель и пожелания' },
+
+        { num: '02', title: 'Мерки', desc: 'Снимаем параметры или используем ваши' },
+
+        { num: '03', title: 'Пошив', desc: 'Создаём изделие вручную' },
+
+        { num: '04', title: 'Примерка', desc: 'Корректируем посадку' },
+
+        { num: '05', title: 'Готово', desc: 'Передаём готовую вещь клиенту' }
+
+      ]; %>
+
+      <% timeline.forEach((t, i) => { %>
+
+        <div class="timeline-step<%= i < timeline.length - 1 ? ' timeline-step--line' : '' %>">
+
+          <span class="timeline-num"><%= t.num %></span>
+
+          <h4><%= t.title %></h4>
+
+          <p><%= t.desc %></p>
+
+        </div>
+
+      <% }) %>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<%- include('partials/section-divider') %>
+
+
+
+<section id="tailoring" class="section tailoring-section">
+
+  <div class="container">
+
+    <div class="section-head reveal">
+
+      <span class="section-label">Пошив</span>
+
+      <h2>Индивидуальный пошив</h2>
+
+      <p class="section-lead">Создадим платье мечты по вашим меркам — от эскиза до финальной примерки</p>
+
+    </div>
+
+    <div class="service-detail-grid reveal">
+
+      <div class="service-detail-card lux-panel">
+
+        <h3>Ваше уникальное платье</h3>
+
+        <p class="service-detail-text">Свадебные и вечерние платья, подиумные образы и торжественные наряды. Подбираем фасон, ткань и декор вместе с вами.</p>
+
+        <a href="#contacts" class="btn btn-luxury">Обсудить пошив</a>
+
+      </div>
+
+      <div class="service-detail-card service-detail-card--accent lux-panel reveal reveal-delay-1">
+
+        <h3>Как начать</h3>
+
+        <p class="service-detail-text">Позвоните или напишите нам — расскажем о сроках, стоимости и запишем на консультацию. Можно прийти с референсами и идеями.</p>
+
+        <% if (settings.phone) { %>
+
+          <a href="<%= phoneHref(settings.phone) %>" class="service-detail-phone phone-display"><%= formatPhone(settings.phone) %></a>
+
+        <% } %>
+
+        <div class="service-detail-contacts">
+
+          <p class="service-detail-contacts-label">Все контакты</p>
+
+          <%- include('partials/social-icons') %>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<%- include('partials/section-divider') %>
+
+
+
+<section id="collection" class="section rental-section evening-section collection-section">
+
+  <div class="evening-section-glow" aria-hidden="true"></div>
+
+  <div class="container">
+
+    <div class="section-head reveal">
+
+      <span class="section-label">Коллекция</span>
+
+      <h2>Платья студии</h2>
+
+      <p class="section-lead">Наведите на фото — выберите <strong>аренду</strong> или <strong>покупку</strong>. Пошив на заказ — по телефону или в разделе выше.</p>
+
+    </div>
+
+
+
+    <div class="collection-hints reveal" role="list">
+
+      <div class="collection-hint" id="collection-rent" role="listitem">
+
+        <span>Аренда</span>
+
+        <p>Заявка на сайте, договор и залог при выдаче</p>
+
+      </div>
+
+      <div class="collection-hint" id="collection-buy" role="listitem">
+
+        <span>Покупка</span>
+
+        <p>Нажмите «Купить платье» — позвоните и договоритесь о передаче</p>
+
+      </div>
+
+      <div class="collection-hint" role="listitem">
+
+        <span>Пошив</span>
+
+        <p>Индивидуальный заказ по вашим меркам — <a href="#tailoring">раздел пошива</a></p>
+
+      </div>
+
+    </div>
+
+
+
+    <% if (!collectionDresses.length) { %>
+
+      <p class="empty-state reveal">Скоро появятся новые модели.</p>
+
+    <% } else { %>
+
+      <div class="gallery-grid gallery-grid--evening gallery-grid--collection">
+
+        <% collectionDresses.forEach((item, i) => { %>
+
+          <%- include('partials/gallery-card', {
+
+            item,
+
+            i,
+
+            cardClass: 'gallery-card--evening',
+
+            frameClass: 'lux-frame--evening',
+
+            imgClass: 'gallery-img-wrap--portrait-tall',
+
+            showMobileBody: true
+
+          }) %>
+
+        <% }) %>
+
+      </div>
+
+    <% } %>
+
+  </div>
+
+</section>
+
+
+
+<%- include('partials/section-divider') %>
+
+
+
+<section id="contacts" class="section contacts-section">
+
+  <div class="container">
+
+    <div class="section-head reveal">
+
+      <span class="section-label">Контакты</span>
+
+      <h2>Связаться с нами</h2>
+
+      <p class="section-lead">Пошив, покупка или аренда — ответим на вопросы и поможем с выбором</p>
+
+    </div>
+
+    <div class="contacts-single reveal">
+
+      <div class="contact-card contact-card--soft">
+
+        <h3>Телефон</h3>
+
+        <% if (settings.phone) { %>
+
+          <a href="<%= phoneHref(settings.phone) %>" class="contact-phone phone-display">
+
+            <%= formatPhone(settings.phone) %>
+
+          </a>
+
+        <% } else { %>
+
+          <span class="contact-phone phone-display">Укажите в админ-панели</span>
+
+        <% } %>
+
+        <p class="contact-note">Консультация, покупка, аренда и индивидуальный заказ</p>
+
+        <%- include('partials/social-icons') %>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<%- include('partials/footer') %>
+

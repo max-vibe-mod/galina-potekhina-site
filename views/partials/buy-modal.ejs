@@ -1,0 +1,18 @@
+<div class="buy-modal" id="buy-modal" hidden aria-hidden="true">
+  <div class="buy-modal__backdrop" data-buy-close></div>
+  <div class="buy-modal__dialog" role="dialog" aria-labelledby="buy-modal-heading" aria-modal="true">
+    <button type="button" class="buy-modal__close" data-buy-close aria-label="Закрыть">&times;</button>
+    <p class="buy-modal__label">Покупка платья</p>
+    <h3 id="buy-modal-heading" class="buy-modal__title" id="buy-modal-title"></h3>
+    <p class="buy-modal__price" id="buy-modal-price"></p>
+    <p class="buy-modal__text">Позвоните нам — обсудим покупку, примерку и условия передачи платья.</p>
+    <% if (settings.phone) { %>
+      <a href="<%= phoneHref(settings.phone) %>" class="buy-modal__phone phone-display" id="buy-modal-phone"><%= formatPhone(settings.phone) %></a>
+    <h3 id="buy-modal-heading" class="buy-modal__title"></h3>
+    <% } else { %>
+      <p class="buy-modal__hint">Укажите телефон студии в админ-панели.</p>
+      <a href="/#contacts" class="btn btn-luxury btn-sm">Контакты</a>
+    <% } %>
+    <button type="button" class="btn btn-outline btn-sm buy-modal__later" data-buy-close>Закрыть</button>
+  </div>
+</div>

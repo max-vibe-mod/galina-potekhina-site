@@ -1,0 +1,306 @@
+<%- include('partials/header') %>
+
+<section class="section dashboard-section">
+  <div class="container">
+    <div class="dashboard-header reveal">
+      <div>
+        <span class="section-label">Client Area</span>
+        <h1>Личный кабинет</h1>
+      </div>
+    </div>
+
+    <% if (saved === 'profile') { %><div class="alert alert-success">Профиль обновлён</div><% } %>
+    <% if (saved === 'measurements') { %><div class="alert alert-success">Мерки сохранены</div><% } %>
+    <% if (saved === 'fitting') { %><div class="alert alert-success">Запись на примерку подтверждена</div><% } %>
+    <% if (saved === 'cancel') { %><div class="alert alert-success">Заказ отменён</div><% } %>
+    <% if (saved === 'media') { %><div class="alert alert-success">Запрос фото/видео отправлен</div><% } %>
+    <% if (saved === 'change') { %><div class="alert alert-success">Запрос на изменение отправлен</div><% } %>
+    <% if (error === 'slot') { %><div class="alert alert-error">Это время уже занято</div><% } %>
+    <% if (error === 'cancel') { %><div class="alert alert-error">Нельзя отменить этот заказ</div><% } %>
+    <% if (error === 'confirm') { %><div class="alert alert-error">Подтвердите, что согласны с возможной доплатой</div><% } %>
+    <% if (error === 'empty') { %><div class="alert alert-error">Заполните текст запроса</div><% } %>
+
+    <nav class="dashboard-nav reveal">
+      <a href="#overview" class="dash-nav-link active">Обзор</a>
+      <a href="#bonuses" class="dash-nav-link">Бонусы</a>
+      <a href="#orders-active" class="dash-nav-link">Заказы</a>
+      <a href="#rentals" class="dash-nav-link">Аренда</a>
+      <a href="#measurements" class="dash-nav-link">Мерки</a>
+      <a href="#fitting" class="dash-nav-link">Примерка</a>
+    </nav>
+
+    <div id="overview" class="dashboard-block reveal">
+      <div class="account-grid">
+        <div class="loyalty-card">
+          <div class="loyalty-card-inner loyalty-card-inner--premium">
+            <div class="loyalty-card-shine"></div>
+            <div class="loyalty-card-chip" aria-hidden="true"></div>
+            <div class="loyalty-card-top">
+              <span class="logo-frame logo-frame--xs">
+                <img src="/logo.png" alt="Студия пошива Галины Потехиной" class="loyalty-logo">
+              </span>
+              <span class="loyalty-brand">Galina Potekhina</span>
+            </div>
+            <p class="loyalty-label">Карта лояльности</p>
+            <p class="loyalty-login"><%= user.login %></p>
+            <div class="loyalty-balance">
+              <span class="balance-label">Баланс</span>
+              <span class="balance-value"><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> ₽</span>
+            </div>
+          </div>
+        </div>
+        <div class="account-info">
+          <h2>Профиль</h2>
+          <form method="POST" action="/account/profile" class="form form-luxury">
+            <div class="form-group">
+              <label>Логин</label>
+              <input type="text" value="<%= user.login %>" disabled>
+            </div>
+            <div class="form-group">
+              <label for="full_name">Имя / ФИО</label>
+              <input type="text" id="full_name" name="full_name" value="<%= user.full_name || '' %>">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" value="<%= user.email || '' %>">
+            </div>
+            <div class="form-group">
+              <label for="phone">Телефон</label>
+              <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
+            </div>
+            <button type="submit" class="btn btn-luxury btn-sm">Сохранить</button>
+          </form>
+          <p class="hint">Регистрация: <%= new Date(user.created_at).toLocaleDateString('ru-RU') %></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="bonuses" class="dashboard-block reveal">
+      <h2>Клуб привилегий</h2>
+      <p class="block-desc">Бонусы начисляются автоматически при заказах и действуют <%= bonusRules.BONUS_DAYS %> дней.</p>
+      <ul class="bonus-info bonus-info-card">
+        <li>Первый заказ от <%= bonusRules.BONUS_THRESHOLD.toLocaleString('ru-RU') %> ₽ — <strong><%= bonusRules.FIRST_ORDER_BONUS %> бонусов</strong></li>
+        <li>Каждый заказ от <%= bonusRules.BONUS_THRESHOLD.toLocaleString('ru-RU') %> ₽ — <strong>+<%= bonusRules.BONUS_PERCENT * 100 %>%</strong></li>
+        <li>Текущий баланс: <strong><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> ₽</strong></li>
+      </ul>
+      <% if (bonusHistory.length > 0) { %>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Дата</th><th>Начислено</th><th>Остаток</th><th>Истекает</th><th>Статус</th></tr></thead>
+            <tbody>
+              <% bonusHistory.forEach(b => { %>
+                <tr class="<%= b.expired ? 'row-expired' : '' %>">
+                  <td><%= new Date(b.earned_at).toLocaleDateString('ru-RU') %></td>
+                  <td><%= b.amount %> ₽</td>
+                  <td><%= b.remaining %> ₽</td>
+                  <td><%= new Date(b.expires_at).toLocaleDateString('ru-RU') %></td>
+                  <td><%= b.expired ? 'Сгорели' : (b.remaining > 0 ? 'Активны' : 'Использованы') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <div id="orders-active" class="dashboard-block reveal">
+      <h2>Мои заказы</h2>
+      <% if (activeOrders.length === 0 && pastOrders.length === 0) { %>
+        <p class="empty-state">Нет заказов. <a href="/#gallery">Выбрать модель</a></p>
+      <% } %>
+
+      <% if (activeOrders.length > 0) { %>
+        <h3 class="subsection-title">Текущие</h3>
+        <div class="order-cards">
+          <% activeOrders.forEach(o => { %>
+            <article class="order-card order-card-full">
+              <div class="order-card-head">
+                <span class="order-id">№<%= o.id %></span>
+                <span class="order-status"><%= o.progressInfo.label %></span>
+              </div>
+              <h3><%= o.product_title %></h3>
+              <p class="order-meta"><%= o.amount.toLocaleString('ru-RU') %> ₽ · оформлен <%= new Date(o.created_at).toLocaleDateString('ru-RU') %></p>
+              <p class="order-stage-desc"><%= o.progressInfo.desc %></p>
+              <% if (o.estimated_date) { %>
+                <p class="order-deadline"><strong>Ориентировочный срок:</strong> <%= new Date(o.estimated_date).toLocaleDateString('ru-RU') %></p>
+              <% } %>
+              <% if (o.stage_note) { %>
+                <p class="order-admin-note"><strong>Комментарий ателье:</strong> <%= o.stage_note %></p>
+              <% } %>
+              <% if (o.progressPhotos && o.progressPhotos.length > 0) { %>
+                <div class="progress-photos">
+                  <p class="subsection-title-sm">Фото этапов пошива</p>
+                  <div class="progress-photos-grid">
+                    <% o.progressPhotos.forEach(p => { %>
+                      <figure class="progress-photo-item">
+                        <a href="<%= p.image_path %>" target="_blank" rel="noopener">
+                          <img src="<%= p.image_path %>" alt="<%= p.caption || 'Этап пошива' %>" loading="lazy">
+                        </a>
+                        <% if (p.caption) { %><figcaption><%= p.caption %></figcaption><% } %>
+                      </figure>
+                    <% }) %>
+                  </div>
+                </div>
+              <% } %>
+              <div class="progress-wrap">
+                <div class="progress-bar" style="width: <%= o.progressInfo.progress %>%"></div>
+              </div>
+              <div class="progress-steps progress-steps--icons">
+                <% const stepIcons = ['✓', '✂', '◉', '◇', '★']; %>
+                <% const stepLabels = ['Принят', 'Пошив', 'Примерка', 'Финал', 'Готово']; %>
+                <% stepLabels.forEach((step, i) => { %>
+                  <span class="progress-step<%= i <= o.progressInfo.step ? ' done' : '' %>">
+                    <span class="step-icon" aria-hidden="true"><%= stepIcons[i] %></span>
+                    <span class="step-label"><%= step %></span>
+                  </span>
+                <% }) %>
+              </div>
+
+              <div class="order-actions">
+                <details class="order-action-block">
+                  <summary>Запросить фото / видео отчёт</summary>
+                  <form method="POST" action="/account/orders/<%= o.id %>/media-request" class="form form-luxury">
+                    <div class="form-group">
+                      <textarea name="media_request" rows="2" placeholder="Что хотите увидеть на фото или видео?" required><%= o.media_request || '' %></textarea>
+                    </div>
+                    <% if (o.media_request_status) { %>
+                      <p class="hint">Статус: <%= o.media_request_status === 'pending' ? 'Ожидает ответа' : o.media_request_status %></p>
+                    <% } %>
+                    <button type="submit" class="btn btn-outline btn-sm">Отправить запрос</button>
+                  </form>
+                </details>
+
+                <details class="order-action-block">
+                  <summary>Внести изменения в заказ</summary>
+                  <div class="warning-box">
+                    При изменении заказа возможна дополнительная оплата — по договорённости с ателье.
+                  </div>
+                  <form method="POST" action="/account/orders/<%= o.id %>/change-request" class="form form-luxury">
+                    <div class="form-group">
+                      <textarea name="change_request" rows="3" placeholder="Опишите желаемые изменения" required><%= o.change_request || '' %></textarea>
+                    </div>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" name="confirm_extra" required>
+                      Понимаю, что возможна доплата
+                    </label>
+                    <% if (o.change_request_status) { %>
+                      <p class="hint">Статус: <%= o.change_request_status === 'pending' ? 'На рассмотрении' : o.change_request_status %></p>
+                    <% } %>
+                    <button type="submit" class="btn btn-outline btn-sm">Отправить</button>
+                  </form>
+                </details>
+
+                <% if (o.canCancel) { %>
+                  <form method="POST" action="/account/orders/<%= o.id %>/cancel" class="cancel-form" onsubmit="return confirm('Отменить заказ №<%= o.id %>?')">
+                    <button type="submit" class="btn btn-ghost btn-sm btn-cancel">Отменить заказ</button>
+                  </form>
+                <% } %>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <% if (pastOrders.length > 0) { %>
+        <h3 class="subsection-title mt-md">История</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>№</th><th>Товар</th><th>Сумма</th><th>Статус</th><th>Дата</th></tr></thead>
+            <tbody>
+              <% pastOrders.forEach(o => { %>
+                <tr>
+                  <td><%= o.id %></td>
+                  <td><%= o.product_title %></td>
+                  <td><%= o.amount.toLocaleString('ru-RU') %> ₽</td>
+                  <td><span class="status status-<%= o.status %>"><%= o.progressInfo.label %></span></td>
+                  <td><%= new Date(o.created_at).toLocaleDateString('ru-RU') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <div id="rentals" class="dashboard-block reveal">
+      <h2>История аренды</h2>
+      <% if (!rentals || rentals.length === 0) { %>
+        <p class="empty-state">Нет заявок на аренду. <a href="/#rental">Посмотреть каталог</a></p>
+      <% } else { %>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>№</th><th>Вещь</th><th>Период</th><th>Сумма</th><th>Статус</th></tr></thead>
+            <tbody>
+              <% rentals.forEach(r => { %>
+                <tr>
+                  <td><%= r.id %></td>
+                  <td><%= r.item_title %></td>
+                  <td><%= r.rent_from %> — <%= r.rent_to %></td>
+                  <td><%= r.amount ? r.amount.toLocaleString('ru-RU') + ' ₽' : '—' %></td>
+                  <td><span class="status status-<%= r.status %>"><%= r.status %></span></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <div id="measurements" class="dashboard-block reveal">
+      <h2>Мои мерки</h2>
+      <p class="block-desc">Параметры в сантиметрах для индивидуального пошива.</p>
+      <form method="POST" action="/account/measurements" class="form form-luxury measurements-form">
+        <div class="measurements-grid">
+          <% const m = measurements || {}; %>
+          <% const fields = [
+            ['chest', 'Обхват груди'], ['waist', 'Талия'], ['hips', 'Бёдра'],
+            ['sleeve', 'Длина рукава'], ['shoulder', 'Плечи'], ['height', 'Рост'], ['neck', 'Шея']
+          ]; %>
+          <% fields.forEach(([key, label]) => { %>
+            <div class="form-group">
+              <label for="m-<%= key %>"><%= label %></label>
+              <input type="number" id="m-<%= key %>" name="<%= key %>" step="0.5" min="0"
+                value="<%= m[key] != null ? m[key] : '' %>" placeholder="см">
+            </div>
+          <% }) %>
+        </div>
+        <div class="form-group">
+          <label for="m-notes">Примечания</label>
+          <textarea id="m-notes" name="notes" rows="2"><%= m.notes || '' %></textarea>
+        </div>
+        <button type="submit" class="btn btn-luxury">Сохранить мерки</button>
+      </form>
+    </div>
+
+    <div id="fitting" class="dashboard-block reveal">
+      <h2>Запись на примерку</h2>
+      <div class="fitting-layout">
+        <div class="calendar-widget" id="fitting-calendar" data-booked='<%- JSON.stringify(bookedSlots) %>'></div>
+        <form method="POST" action="/account/fitting" class="form form-luxury fitting-form" id="fitting-form">
+          <input type="hidden" name="appointment_date" id="fitting-date">
+          <input type="hidden" name="appointment_time" id="fitting-time">
+          <p class="fitting-selected" id="fitting-selected">Выберите дату и время</p>
+          <div class="time-slots" id="time-slots"></div>
+          <div class="form-group">
+            <label for="fitting-notes">Комментарий</label>
+            <textarea id="fitting-notes" name="notes" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-luxury" id="fitting-submit" disabled>Записаться</button>
+        </form>
+      </div>
+      <% if (fittings.length > 0) { %>
+        <div class="fitting-list mt-md">
+          <% fittings.forEach(f => { %>
+            <div class="fitting-item">
+              <span><%= new Date(f.appointment_date).toLocaleDateString('ru-RU') %></span>
+              <span><%= f.appointment_time %></span>
+              <span class="status status-<%= f.status %>"><%= f.status === 'pending' ? 'Ожидает' : f.status %></span>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

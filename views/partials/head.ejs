@@ -1,0 +1,39 @@
+<% const _title = (typeof meta !== 'undefined' && meta.title) ? meta.title : (typeof title !== 'undefined' ? title : 'Galina Potekhina'); %>
+<% const _desc = (typeof meta !== 'undefined' && meta.description) ? meta.description : 'Студия премиального пошива Galina Potekhina во Владивостоке — пошив платьев на заказ и аренда.'; %>
+<% const _keywords = (typeof meta !== 'undefined' && meta.keywords) ? meta.keywords : 'пошив платья на заказ владивосток, аренда платья владивосток, купить вечернее платье владивосток, студия пошива владивосток'; %>
+<% const _path = (typeof meta !== 'undefined' && meta.path) ? meta.path : '/'; %>
+<% const _img = (typeof meta !== 'undefined' && meta.image) ? meta.image : '/logo.png'; %>
+<% const _noindex = (typeof meta !== 'undefined' && meta.noindex); %>
+<% const _canonical = siteUrl + _path; %>
+<% const _ogImage = _img.startsWith('http') ? _img : siteUrl + _img; %>
+<% const _pageTitle = _title.includes('Galina Potekhina') ? _title : _title + ' — Galina Potekhina'; %>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title><%= _pageTitle %></title>
+<meta name="description" content="<%= _desc %>">
+<meta name="keywords" content="<%= _keywords %>">
+<meta name="geo.region" content="RU-PRI">
+<meta name="geo.placename" content="Владивосток">
+<meta name="geo.position" content="43.115542;131.885494">
+<meta name="ICBM" content="43.115542, 131.885494">
+<link rel="canonical" href="<%= _canonical %>">
+<% if (_noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><meta name="robots" content="index, follow"><% } %>
+<meta name="theme-color" content="#f5f2ec">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Galina Potekhina — Владивосток">
+<meta property="og:title" content="<%= _pageTitle %>">
+<meta property="og:description" content="<%= _desc %>">
+<meta property="og:url" content="<%= _canonical %>">
+<meta property="og:image" content="<%= _ogImage %>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= _pageTitle %>">
+<meta name="twitter:description" content="<%= _desc %>">
+<meta name="twitter:image" content="<%= _ogImage %>">
+<%- include('seo-jsonld') %>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/polish.css">

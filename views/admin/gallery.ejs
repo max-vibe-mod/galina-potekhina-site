@@ -1,0 +1,164 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Галерея вещей</h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin/gallery' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+      </nav>
+    </div>
+
+    <% if (message === 'added') { %><div class="alert alert-success">Вещь добавлена в коллекцию на сайте</div><% } %>
+    <% if (message === 'updated') { %><div class="alert alert-success">Изменения сохранены</div><% } %>
+    <% if (message === 'deleted') { %>
+      <div class="alert alert-success">
+        <% if (name) { %>Фото «<%= name %>» удалено из галереи<% } else { %>Фото удалено<% } %>
+      </div>
+    <% } %>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+    <div class="admin-form-card">
+      <h2>Добавить вещь</h2>
+      <form method="POST" action="/admin/gallery" enctype="multipart/form-data" class="form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Название *</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Цена (₽)</label>
+            <input type="number" id="price" name="price" min="0" step="100">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description">Описание</label>
+          <textarea id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="image">Фото * (JPG, PNG — до 50 МБ)</label>
+          <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" name="for_order" checked> Доступно для заказа</label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" name="for_rent"> Доступно для аренды</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rent_price_day">Аренда: цена за день (₽)</label>
+            <input type="number" id="rent_price_day" name="rent_price_day" min="0" step="100">
+          </div>
+          <div class="form-group">
+            <label for="rent_price_week">Аренда: цена за неделю (₽)</label>
+            <input type="number" id="rent_price_week" name="rent_price_week" min="0" step="100">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Раздел</label>
+            <select id="category" name="category">
+              <option value="collection">Основная коллекция</option>
+              <option value="evening_couture">Вечерняя коллекция (аренда)</option>
+              <option value="children_evening">Детские (устар.)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-gold">Загрузить</button>
+      </form>
+    </div>
+
+    <h2 class="mt-lg">Управление коллекцией</h2>
+
+    <% if (gallery.length === 0) { %>
+      <p class="empty-state">В галерее пока нет фото. Загрузите первую вещь выше.</p>
+    <% } else { %>
+      <div class="table-wrap mb-lg">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Превью</th>
+              <th>Название</th>
+              <th>Заказ / Аренда</th>
+              <th>Цены</th>
+              <th>На сайте</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% gallery.forEach((item, idx) => { %>
+              <tr class="<%= item.active ? '' : 'row-muted' %>">
+                <td class="admin-actions-cell">
+                  <form method="POST" action="/admin/gallery/<%= item.id %>/move/up" class="inline-form">
+                    <button type="submit" class="btn btn-ghost btn-sm" <%= idx === 0 ? 'disabled' : '' %>>↑</button>
+                  </form>
+                  <form method="POST" action="/admin/gallery/<%= item.id %>/move/down" class="inline-form">
+                    <button type="submit" class="btn btn-ghost btn-sm" <%= idx === gallery.length - 1 ? 'disabled' : '' %>>↓</button>
+                  </form>
+                </td>
+                <td><img src="<%= item.image_path %>" alt="" class="admin-thumb"></td>
+                <td colspan="5">
+                  <form method="POST" action="/admin/gallery/<%= item.id %>/update" class="gallery-edit-form">
+                    <div class="gallery-edit-grid">
+                      <div>
+                        <input type="text" name="title" value="<%= item.title %>" class="input-sm">
+                        <textarea name="description" rows="2" class="input-sm"><%= item.description || '' %></textarea>
+                      </div>
+                      <div class="gallery-edit-flags">
+                        <label class="checkbox-inline"><input type="checkbox" name="for_order" <%= item.for_order ? 'checked' : '' %>> Заказ</label>
+                        <label class="checkbox-inline"><input type="checkbox" name="for_rent" <%= item.for_rent ? 'checked' : '' %>> Аренда</label>
+                        <span class="hint"><%= item.active ? 'На сайте' : 'Скрыто' %></span>
+                      </div>
+                      <div class="gallery-edit-prices">
+                        <input type="number" name="price" value="<%= item.price || 0 %>" class="input-sm" title="Цена заказа">
+                        <input type="number" name="rent_price_day" value="<%= item.rent_price_day || 0 %>" class="input-sm" title="₽/день">
+                        <input type="number" name="rent_price_week" value="<%= item.rent_price_week || 0 %>" class="input-sm" title="₽/нед">
+                      </div>
+                      <div class="gallery-edit-actions">
+                        <button type="submit" class="btn btn-gold btn-sm">Сохранить</button>
+                        <button type="submit" formaction="/admin/gallery/<%= item.id %>/toggle" formmethod="POST" class="btn btn-ghost btn-sm"><%= item.active ? 'Скрыть' : 'Показать' %></button>
+                        <button type="submit" formaction="/admin/gallery/<%= item.id %>/delete" formmethod="POST" class="btn btn-danger btn-sm"
+                          onclick="return confirm('Удалить «<%= item.title.replace(/'/g, "\\'") %>»?');">Удалить</button>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admin-gallery-grid">
+        <% gallery.forEach(item => { %>
+          <div class="admin-gallery-item <%= item.active ? '' : 'inactive' %>">
+            <div class="gallery-photo-frame">
+              <img src="<%= item.image_path %>" alt="<%= item.title %>" loading="lazy">
+            </div>
+            <div class="admin-gallery-info">
+              <h3><%= item.title %></h3>
+              <p><%= item.price ? item.price.toLocaleString('ru-RU') + ' ₽' : 'Без цены' %></p>
+              <div class="admin-actions">
+                <form method="POST" action="/admin/gallery/<%= item.id %>/toggle" class="inline-form">
+                  <button type="submit" class="btn btn-ghost btn-sm"><%= item.active ? 'Скрыть с сайта' : 'Показать на сайте' %></button>
+                </form>
+                <form method="POST" action="/admin/gallery/<%= item.id %>/delete" class="inline-form"
+                  onsubmit="return confirm('Удалить «<%= item.title.replace(/'/g, "\\'") %>»?');">
+                  <button type="submit" class="btn btn-danger btn-sm btn-delete-photo">Удалить фото</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

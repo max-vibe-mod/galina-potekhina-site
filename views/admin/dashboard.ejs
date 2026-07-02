@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Админ-панель</h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+        <a href="/" target="_blank">Сайт ↗</a>
+      </nav>
+    </div>
+
+    <% if (message) { %><div class="alert alert-success">Готово!</div><% } %>
+
+    <div class="stats-grid">
+      <div class="stat-card"><span class="stat-num"><%= stats.gallery %></span><span class="stat-label">В галерее</span></div>
+      <div class="stat-card"><span class="stat-num"><%= stats.orders %></span><span class="stat-label">Заказов всего</span></div>
+      <div class="stat-card"><span class="stat-num"><%= stats.ordersMonth %></span><span class="stat-label">Заказов за месяц</span></div>
+      <div class="stat-card"><span class="stat-num"><%= Math.floor(stats.revenueMonth).toLocaleString('ru-RU') %></span><span class="stat-label">Выручка за месяц (₽)</span></div>
+      <div class="stat-card"><span class="stat-num"><%= stats.rentals %></span><span class="stat-label">Заявок на аренду</span></div>
+      <div class="stat-card"><span class="stat-num"><%= stats.users %></span><span class="stat-label">Клиентов</span></div>
+      <div class="stat-card"><span class="stat-num"><%= stats.pendingRequests %></span><span class="stat-label">Новых запросов</span></div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><span class="stat-num"><%= Math.floor(bonusStats.totalActive).toLocaleString('ru-RU') %></span><span class="stat-label">Бонусов активно (₽)</span></div>
+      <div class="stat-card"><span class="stat-num"><%= bonusStats.usersWithBonus %></span><span class="stat-label">С бонусами</span></div>
+    </div>
+
+    <% if (popular && popular.length > 0) { %>
+      <h2>Популярные модели</h2>
+      <div class="table-wrap mb-lg">
+        <table class="data-table">
+          <thead><tr><th>Модель</th><th>Заказов</th><th>Выручка</th></tr></thead>
+          <tbody>
+            <% popular.forEach(p => { %>
+              <tr>
+                <td><%= p.product_title %></td>
+                <td><%= p.cnt %></td>
+                <td><%= Math.floor(p.total || 0).toLocaleString('ru-RU') %> ₽</td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <h2>Последние заказы</h2>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>№</th><th>Товар</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th></th></tr></thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><%= o.id %></td>
+              <td><%= o.product_title %></td>
+              <td><%= o.customer_name %><% if (o.login) { %> (<%= o.login %>)<% } %></td>
+              <td><%= o.amount.toLocaleString('ru-RU') %> ₽</td>
+              <td><%= o.status %></td>
+              <td><a href="/admin/orders/<%= o.id %>">Открыть</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

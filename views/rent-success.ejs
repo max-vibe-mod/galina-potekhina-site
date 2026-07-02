@@ -1,0 +1,80 @@
+<%- include('partials/header') %>
+
+
+
+<section class="section">
+
+  <div class="container success-container">
+
+    <div class="success-card success-card--rent">
+
+      <div class="success-icon">✓</div>
+
+      <h1>Заявка №<%= booking.id %> принята</h1>
+
+      <div class="ornament-line center"></div>
+
+      <p>Платье: <strong><%= booking.item_title %></strong></p>
+
+      <p>Период: <strong><%= booking.rent_from %></strong> — <strong><%= booking.rent_to %></strong>
+
+        (<%= booking.rent_days %> календ. дн., <%= booking.period_type === 'week' ? 'тариф по неделям' : 'тариф по дням' %>)</p>
+
+
+
+      <div class="rent-success-summary">
+
+        <% if (booking.rent_breakdown) { %>
+
+          <p>Расчёт: <%= booking.rent_breakdown %></p>
+
+        <% } %>
+
+        <p>Аренда: <strong><%= booking.amount.toLocaleString('ru-RU') %> ₽</strong></p>
+
+        <p>Залог: <strong><%= (booking.deposit_amount || 0).toLocaleString('ru-RU') %> ₽</strong></p>
+
+        <p class="rent-success-total">Итого при выдаче: <strong><%= (booking.amount + (booking.deposit_amount || 0)).toLocaleString('ru-RU') %> ₽</strong></p>
+
+      </div>
+
+
+
+      <div class="alert alert-warning rent-contract-notice">
+
+        <strong>Договор проката сформирован.</strong> Скачайте проект договора, распечатайте или сохраните в PDF.
+
+        <br><br>
+
+        <strong>Без личной подписи Галины Потехиной при выдаче платья договор не является действующим.</strong>
+
+      </div>
+
+
+
+      <div class="success-actions">
+
+        <% if (booking.contract_file) { %>
+
+          <a href="/rent/contract/<%= booking.id %>" class="btn btn-luxury" target="_blank" rel="noopener">Скачать / распечатать договор</a>
+
+        <% } %>
+
+        <a href="/" class="btn btn-outline">На главную</a>
+
+      </div>
+
+
+
+      <p class="alert alert-info">Мы свяжемся с вами для подтверждения дат и выдачи платья.</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<%- include('partials/footer') %>
+

@@ -1,0 +1,56 @@
+  </main>
+
+  <footer class="site-footer">
+
+    <div class="container footer-inner">
+
+      <div class="footer-brand reveal">
+
+        <%- include('logo-frame', { logoClass: 'logo-frame--sm', alt: '', imgClass: 'footer-logo' }) %>
+
+        <p>Студия пошива свадебных и вечерних платьев · Владивосток</p>
+
+      </div>
+
+      <nav class="footer-nav reveal reveal-delay-1" aria-label="Навигация">
+
+        <%- include('site-nav-links') %>
+
+        <% if (user && user.isAdmin) { %>
+
+          <a href="/admin">Админ</a>
+
+        <% } %>
+
+      </nav>
+
+      <div class="footer-contacts reveal reveal-delay-2">
+
+        <% if (settings.phone) { %>
+
+          <a href="<%= phoneHref(settings.phone) %>" class="footer-phone phone-display"><%= formatPhone(settings.phone) %></a>
+
+        <% } %>
+
+        <%- include('social-icons') %>
+
+      </div>
+
+      <p class="copyright reveal">&copy; <%= new Date().getFullYear() %> Galina Potekhina</p>
+
+    </div>
+
+  </footer>
+
+  <%- include('mobile-contact-bar') %>
+
+  <%- include('buy-modal') %>
+
+  <%- include('back-to-top') %>
+
+  <script src="/js/main.js"></script>
+
+</body>
+
+</html>
+

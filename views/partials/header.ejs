@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+  <%- include('head') %>
+
+</head>
+
+<body class="<%= locals.isHome ? 'page-home page-home--video' : '' %>">
+
+  <header class="site-header" id="site-header">
+
+    <div class="container header-inner">
+
+      <a href="/" class="logo-link">
+
+        <%- include('logo-frame', { logoClass: 'logo-frame--sm', alt: 'Студия пошива Галины Потехиной' }) %>
+
+      </a>
+
+      <nav class="main-nav" id="main-nav" aria-label="Основное меню">
+
+        <%- include('site-nav-links') %>
+
+        <% if (user && user.isAdmin) { %>
+
+          <a href="/admin" class="nav-admin">Админ</a>
+
+          <form action="/logout" method="POST" class="inline-form">
+
+            <button type="submit" class="btn btn-ghost btn-sm">Выйти</button>
+
+          </form>
+
+        <% } %>
+
+      </nav>
+
+      <button class="menu-toggle" id="menu-toggle" aria-label="Меню">
+
+        <span></span><span></span>
+
+      </button>
+
+    </div>
+
+  </header>
+
+  <main>
+

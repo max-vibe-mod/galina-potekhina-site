@@ -1,0 +1,76 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container order-layout">
+    <p class="order-back"><a href="/#collection-buy" class="link-back">← Назад к коллекции</a></p>
+    <div class="order-product">
+      <img src="<%= item.image_path %>" alt="<%= item.title %>">
+      <h1><%= item.title %></h1>
+      <% if (item.description) { %><p><%= item.description %></p><% } %>
+      <% if (item.price > 0) { %>
+        <p class="gallery-price"><%= item.price.toLocaleString('ru-RU') %> ₽</p>
+      <% } %>
+    </div>
+
+    <div class="order-form-wrap">
+      <h2>Оформление заказа</h2>
+      <div class="ornament-line"></div>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <form method="POST" action="/order/<%= item.id %>" class="form">
+        <div class="form-group">
+          <label for="customer_name">Имя заказчика *</label>
+          <input type="text" id="customer_name" name="customer_name" required
+            value="<%= prefill?.full_name || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="phone">Телефон *</label>
+          <input type="tel" id="phone" name="phone" required
+            value="<%= prefill?.phone || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="email">Email (для чека самозанятого)</label>
+          <input type="email" id="email" name="email" placeholder="Чек придёт на указанную почту"
+            value="<%= prefill?.email || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="address">Адрес доставки</label>
+          <input type="text" id="address" name="address">
+        </div>
+        <div class="form-group">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" name="comment" rows="3"></textarea>
+        </div>
+
+        <% if (bonusBalance > 0) { %>
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" name="use_bonus" checked>
+              Использовать бонусы (доступно: <%= Math.floor(bonusBalance) %> ₽)
+            </label>
+          </div>
+        <% } else if (!user) { %>
+          <p class="hint">Оформите заказ — мы свяжемся с вами для уточнения деталей.</p>
+        <% } %>
+
+        <div class="form-group">
+          <label for="payment_method">Способ оплаты</label>
+          <select id="payment_method" name="payment_method">
+            <option value="card">Банковская карта</option>
+            <option value="transfer">Перевод</option>
+            <option value="cash">Наличные при получении</option>
+          </select>
+        </div>
+
+        <div class="receipt-info">
+          <p>Оплата как самозанятый: <strong><%= settings.self_employed_name %></strong></p>
+          <% if (settings.self_employed_inn) { %><p>ИНН: <%= settings.self_employed_inn %></p><% } %>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-block btn-lg">Подтвердить заказ</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

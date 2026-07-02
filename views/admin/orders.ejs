@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Заказы</h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin/orders' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+      </nav>
+    </div>
+
+    <% if (message === 'updated') { %><div class="alert alert-success">Статус обновлён</div><% } %>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>№</th><th>Товар</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Срок</th><th>Запросы</th><th>Дата</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><%= o.id %></td>
+              <td><%= o.product_title %></td>
+              <td><%= o.customer_name %><% if (o.login) { %><br><small>@<%= o.login %></small><% } %></td>
+              <td><%= o.amount.toLocaleString('ru-RU') %> ₽</td>
+              <td><%= o.status %></td>
+              <td><%= o.estimated_date ? new Date(o.estimated_date).toLocaleDateString('ru-RU') : '—' %></td>
+              <td>
+                <% if (o.media_request_status === 'pending') { %>📷<% } %>
+                <% if (o.change_request_status === 'pending') { %>✏️<% } %>
+                <% if (!o.media_request_status && !o.change_request_status) { %>—<% } %>
+              </td>
+              <td><%= new Date(o.created_at).toLocaleDateString('ru-RU') %></td>
+              <td><a href="/admin/orders/<%= o.id %>">Управление</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

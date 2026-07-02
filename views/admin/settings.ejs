@@ -1,0 +1,133 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Настройки сайта</h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin/settings' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+      </nav>
+    </div>
+
+    <% if (message === 'saved') { %><div class="alert alert-success">Настройки сохранены</div><% } %>
+
+    <form method="POST" action="/admin/settings" class="form admin-form-card">
+      <h2>Контакты и мессенджеры</h2>
+      <p class="hint">Эти ссылки отображаются на сайте (иконки WhatsApp, Telegram, Instagram, MAX).</p>
+      <div class="form-group">
+        <label for="phone">Телефон</label>
+        <input type="text" id="phone" name="phone" value="<%= settings.phone || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="whatsapp">WhatsApp — ссылка или номер</label>
+        <input type="text" id="whatsapp" name="whatsapp" value="<%= settings.whatsapp || '' %>" placeholder="https://wa.me/qr/... или 79991234567">
+        <p class="hint">Можно вставить ссылку wa.me (в т.ч. QR) или номер — только цифры, без +.</p>
+      </div>
+      <div class="form-group">
+        <label for="telegram">Telegram — ссылка</label>
+        <input type="url" id="telegram" name="telegram" value="<%= settings.telegram || '' %>" placeholder="https://t.me/username">
+      </div>
+      <div class="form-group">
+        <label for="instagram">Instagram — ссылка</label>
+        <input type="url" id="instagram" name="instagram" value="<%= settings.instagram || '' %>" placeholder="https://instagram.com/...">
+      </div>
+      <div class="form-group">
+        <label for="max">MAX — ссылка на профиль</label>
+        <input type="url" id="max" name="max" value="<%= settings.max || '' %>" placeholder="https://max.ru/u/...">
+      </div>
+      <div class="form-group">
+        <label for="vk">VKontakte — ссылка (только в подвале сайта)</label>
+        <input type="url" id="vk" name="vk" value="<%= settings.vk || '' %>">
+      </div>
+
+      <h2>Главная — hero</h2>
+      <div class="form-group">
+        <label for="hero_title">Заголовок</label>
+        <input type="text" id="hero_title" name="hero_title" value="<%= settings.hero_title || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="hero_subtitle">Подзаголовок</label>
+        <textarea id="hero_subtitle" name="hero_subtitle" rows="2"><%= settings.hero_subtitle || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label for="hero_bg_image">Фон hero (URL фото ателье)</label>
+        <input type="text" id="hero_bg_image" name="hero_bg_image" value="<%= settings.hero_bg_image || '' %>" placeholder="/uploads/atelier.jpg">
+      </div>
+
+      <h2>О студии</h2>
+      <div class="form-group">
+        <label for="about_title">Заголовок секции</label>
+        <input type="text" id="about_title" name="about_title" value="<%= settings.about_title || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="about_image">Фото (URL)</label>
+        <input type="text" id="about_image" name="about_image" value="<%= settings.about_image || '' %>" placeholder="/uploads/studio.jpg или /logo.png">
+      </div>
+      <div class="form-group">
+        <label for="about_text">Текст (абзац 1)</label>
+        <textarea id="about_text" name="about_text" rows="3"><%= settings.about_text || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label for="about_text_2">Текст (абзац 2)</label>
+        <textarea id="about_text_2" name="about_text_2" rows="3"><%= settings.about_text_2 || '' %></textarea>
+      </div>
+
+      <h2>Аренда — тексты на главной</h2>
+      <div class="form-group">
+        <label for="rental_title">Заголовок</label>
+        <input type="text" id="rental_title" name="rental_title" value="<%= settings.rental_title || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="rental_text">Описание</label>
+        <textarea id="rental_text" name="rental_text" rows="2"><%= settings.rental_text || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label for="rental_how_title">Заголовок «Как оформить»</label>
+        <input type="text" id="rental_how_title" name="rental_how_title" value="<%= settings.rental_how_title || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="rental_how_text">Текст «Как оформить»</label>
+        <textarea id="rental_how_text" name="rental_how_text" rows="2"><%= settings.rental_how_text || '' %></textarea>
+      </div>
+
+      <h2>Уведомления админу</h2>
+      <div class="form-group">
+        <label for="admin_notify_email">Email для новых заказов и аренды</label>
+        <input type="email" id="admin_notify_email" name="admin_notify_email" value="<%= settings.admin_notify_email || '' %>">
+      </div>
+      <p class="hint">Telegram: задайте ADMIN_TELEGRAM_BOT_TOKEN и ADMIN_TELEGRAM_CHAT_ID в .env.local</p>
+
+      <h2>Данные самозанятого (для чеков и договора аренды)</h2>
+      <div class="form-group">
+        <label for="self_employed_name">ФИО (Арендодатель)</label>
+        <input type="text" id="self_employed_name" name="self_employed_name" value="<%= settings.self_employed_name || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="self_employed_inn">ИНН</label>
+        <input type="text" id="self_employed_inn" name="self_employed_inn" value="<%= settings.self_employed_inn || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="landlord_ogrnip">ОГРНИП</label>
+        <input type="text" id="landlord_ogrnip" name="landlord_ogrnip" value="<%= settings.landlord_ogrnip || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="landlord_address">Адрес регистрации (для договора)</label>
+        <input type="text" id="landlord_address" name="landlord_address" value="<%= settings.landlord_address || '' %>" placeholder="г. Владивосток, ул. ...">
+      </div>
+      <div class="form-group">
+        <label for="landlord_passport">Паспортные данные (для договора)</label>
+        <input type="text" id="landlord_passport" name="landlord_passport" value="<%= settings.landlord_passport || '' %>" placeholder="серия, номер, кем выдан">
+      </div>
+      <div class="form-group">
+        <label for="self_employed_email">Email для чеков</label>
+        <input type="email" id="self_employed_email" name="self_employed_email" value="<%= settings.self_employed_email || '' %>">
+      </div>
+
+      <button type="submit" class="btn btn-gold">Сохранить</button>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

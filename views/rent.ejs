@@ -1,0 +1,178 @@
+<%- include('partials/header') %>
+<% const f = locals.form || null; const p = locals.prefill || null; %>
+<section class="section rent-page">
+  <div class="container order-layout">
+    <p class="order-back"><a href="/#collection-rent" class="link-back">← Назад к аренде</a></p>
+    <div class="order-product">
+      <img src="<%= item.image_path %>" alt="<%= item.title %>">
+      <h1><%= item.title %></h1>
+      <% if (item.description) { %><p class="gallery-desc"><%= item.description %></p><% } %>
+
+      <div class="rent-price-card">
+        <p class="rent-price-card__label">Тарифы аренды</p>
+        <% if (item.rent_price_day > 0) { %>
+          <p class="gallery-price"><%= item.rent_price_day.toLocaleString('ru-RU') %> ₽ <span>/ сутки</span></p>
+        <% } %>
+        <% if (item.rent_price_week > 0) { %>
+          <p class="gallery-desc"><%= item.rent_price_week.toLocaleString('ru-RU') %> ₽ / неделя</p>
+        <% } %>
+        <p class="rent-price-card__value">Оценочная стоимость платья: <strong><%= dressValue.toLocaleString('ru-RU') %> ₽</strong></p>
+        <p class="rent-price-card__deposit">Залог при выдаче: <strong><%= depositPreview.toLocaleString('ru-RU') %> ₽</strong> (<%= depositPercent %>% от стоимости)</p>
+      </div>
+    </div>
+
+    <div class="order-form-wrap">
+      <h2>Заявка на аренду</h2>
+      <div class="ornament-line"></div>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <div class="rent-notice">
+        <p><strong>Важно:</strong> при оформлении заявки на сайте формируется проект договора проката. Он вступает в силу только после личной подписи Галины Потехиной при выдаче платья.</p>
+        <p>При порче или утрате платья удерживается залог в размере <%= depositPercent %>% от оценочной стоимости (<%= depositPreview.toLocaleString('ru-RU') %> ₽). При существенном повреждении возможна компенсация в пределах полной стоимости платья.</p>
+      </div>
+
+      <form method="POST" action="/rent/<%= item.id %>" class="form" id="rent-form"
+        data-price-day="<%= item.rent_price_day %>"
+        data-price-week="<%= item.rent_price_week %>"
+        data-dress-value="<%= dressValue %>"
+        data-deposit-percent="<%= depositPercent %>">
+
+        <fieldset class="rent-form-block">
+          <legend class="rent-form-block__title">1. Контактные данные</legend>
+        <div class="form-group">
+          <label for="customer_name">ФИО полностью *</label>
+          <input type="text" id="customer_name" name="customer_name" required
+            placeholder="Иванова Мария Сергеевна"
+            value="<%= f && f.customer_name ? f.customer_name : (p && p.full_name ? p.full_name : '') %>">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Телефон *</label>
+            <input type="tel" id="phone" name="phone" required
+              value="<%= f && f.phone ? f.phone : (p && p.phone ? p.phone : '') %>">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+              value="<%= f && f.email ? f.email : (p && p.email ? p.email : '') %>">
+          </div>
+        </div>
+        </fieldset>
+
+        <fieldset class="rent-form-block">
+          <legend class="rent-form-block__title">2. Данные для договора</legend>
+        <div class="form-group">
+          <label for="passport">Паспорт (серия, номер, кем выдан) *</label>
+          <input type="text" id="passport" name="passport" required
+            placeholder="40 12 345678, выдан УФМС..."
+            value="<%= f && f.passport ? f.passport : '' %>">
+        </div>
+        <div class="form-group">
+          <label for="tenant_address">Адрес проживания *</label>
+          <input type="text" id="tenant_address" name="tenant_address" required
+            placeholder="г. Владивосток, ул. ..."
+            value="<%= f && f.tenant_address ? f.tenant_address : '' %>">
+        </div>
+        <div class="form-group">
+          <label for="tenant_inn">ИНН (если есть)</label>
+          <input type="text" id="tenant_inn" name="tenant_inn"
+            value="<%= f && f.tenant_inn ? f.tenant_inn : '' %>">
+        </div>
+        <div class="form-group">
+          <label for="rental_purpose">Цель аренды *</label>
+          <input type="text" id="rental_purpose" name="rental_purpose" required
+            placeholder="Выпускной, фотосессия, конкурс..."
+            value="<%= f && f.rental_purpose ? f.rental_purpose : '' %>">
+        </div>
+        </fieldset>
+
+        <fieldset class="rent-form-block">
+          <legend class="rent-form-block__title">3. Период аренды</legend>
+          <p class="rent-calendar-hint" id="rent-calendar-hint">Шаг 1: нажмите дату начала аренды.</p>
+          <div class="calendar-widget rent-calendar-widget" id="rent-calendar" aria-label="Календарь выбора периода аренды"></div>
+          <p class="rent-period-summary" id="rent-period-summary">Даты не выбраны</p>
+          <input type="hidden" id="rent_from" name="rent_from" required value="<%= f && f.rent_from ? f.rent_from : '' %>">
+          <input type="hidden" id="rent_to" name="rent_to" required value="<%= f && f.rent_to ? f.rent_to : '' %>">
+
+          <div class="form-row rent-time-row">
+            <div class="form-group">
+              <label for="pickup_time">Время получения (ориентир)</label>
+              <select id="pickup_time" name="pickup_time">
+                <option value="">Не выбрано</option>
+                <option value="10:00–12:00" <%= f && f.pickup_time === '10:00–12:00' ? 'selected' : '' %>>Утро, 10:00–12:00</option>
+                <option value="12:00–14:00" <%= f && f.pickup_time === '12:00–14:00' ? 'selected' : '' %>>День, 12:00–14:00</option>
+                <option value="14:00–16:00" <%= f && f.pickup_time === '14:00–16:00' ? 'selected' : '' %>>День, 14:00–16:00</option>
+                <option value="16:00–18:00" <%= f && f.pickup_time === '16:00–18:00' ? 'selected' : '' %>>Вечер, 16:00–18:00</option>
+                <option value="18:00–20:00" <%= f && f.pickup_time === '18:00–20:00' ? 'selected' : '' %>>Вечер, 18:00–20:00</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="return_time">Время возврата (ориентир)</label>
+              <select id="return_time" name="return_time">
+                <option value="">Не выбрано</option>
+                <option value="10:00–12:00" <%= f && f.return_time === '10:00–12:00' ? 'selected' : '' %>>Утро, 10:00–12:00</option>
+                <option value="12:00–14:00" <%= f && f.return_time === '12:00–14:00' ? 'selected' : '' %>>День, 12:00–14:00</option>
+                <option value="14:00–16:00" <%= f && f.return_time === '14:00–16:00' ? 'selected' : '' %>>День, 14:00–16:00</option>
+                <option value="16:00–18:00" <%= f && f.return_time === '16:00–18:00' ? 'selected' : '' %>>Вечер, 16:00–18:00</option>
+                <option value="18:00–20:00" <%= f && f.return_time === '18:00–20:00' ? 'selected' : '' %>>Вечер, 18:00–20:00</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="rent-form-block">
+          <legend class="rent-form-block__title">4. Тариф и расчёт</legend>
+        <div class="form-group">
+          <label for="period_type">Тариф расчёта *</label>
+          <select id="period_type" name="period_type">
+            <option value="day" <%= !f || f.period_type !== 'week' ? 'selected' : '' %>>По дням — сутки × количество дней</option>
+            <option value="week" <%= f && f.period_type === 'week' ? 'selected' : '' %>>По неделям — неделя × количество недель (округление вверх)</option>
+          </select>
+        </div>
+
+        <div class="rent-calc-panel" id="rent-calc-panel" aria-live="polite">
+          <p class="rent-calc-panel__title">Расчёт стоимости</p>
+          <p id="rent-calc-days" class="rent-calc-line">Выберите период в календаре</p>
+          <p id="rent-calc-rent" class="rent-calc-line rent-calc-line--sum">Аренда: —</p>
+          <p id="rent-calc-deposit" class="rent-calc-line">Залог: <%= depositPreview.toLocaleString('ru-RU') %> ₽</p>
+          <p id="rent-calc-total" class="rent-calc-line rent-calc-line--total">Итого при выдаче: —</p>
+        </div>
+        </fieldset>
+
+        <fieldset class="rent-form-block">
+          <legend class="rent-form-block__title">5. Оплата и комментарий</legend>
+        <div class="form-group">
+          <label for="payment_method">Способ оплаты</label>
+          <select id="payment_method" name="payment_method">
+            <option value="card" <%= f && f.payment_method === 'card' ? 'selected' : '' %>>Банковская карта</option>
+            <option value="transfer" <%= f && f.payment_method === 'transfer' ? 'selected' : '' %>>Перевод</option>
+            <option value="cash" <%= f && f.payment_method === 'cash' ? 'selected' : '' %>>Наличные при получении</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" name="comment" rows="2" placeholder="Дополнительные пожелания (необязательно)"><%= f && f.comment ? f.comment : '' %></textarea>
+        </div>
+        </fieldset>
+
+        <div class="rent-consents">
+          <label class="rent-consent">
+            <input type="checkbox" name="accept_terms" required <%= f && f.accept_terms === 'on' ? 'checked' : '' %>>
+            <span>Согласен с условиями аренды; договор действителен после подписи Галины при выдаче</span>
+          </label>
+          <label class="rent-consent">
+            <input type="checkbox" name="accept_deposit" required <%= f && f.accept_deposit === 'on' ? 'checked' : '' %>>
+            <span>Уведомлён о залоге <%= depositPercent %>% (<%= depositPreview.toLocaleString('ru-RU') %> ₽) при порче платья</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-luxury btn-block btn-lg">Отправить заявку и сформировать договор</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script src="/js/rent-calendar.js"></script>
+<script src="/js/rent-calculator.js"></script>
+<%- include('partials/footer') %>

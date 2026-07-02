@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h1>Заявки на аренду</h1>
+      <nav class="admin-nav">
+        <% adminNav.forEach(n => { %>
+          <a href="<%= n.href %>" class="<%= n.href === '/admin/rentals' ? 'active' : '' %>"><%= n.label %></a>
+        <% }) %>
+      </nav>
+    </div>
+
+    <% if (message === 'updated') { %><div class="alert alert-success">Статус обновлён</div><% } %>
+
+    <% if (rentals.length === 0) { %>
+      <p class="empty-state">Заявок на аренду пока нет.</p>
+    <% } else { %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>№</th><th>Платье</th><th>Клиент</th><th>Телефон</th><th>Период</th><th>Аренда</th><th>Залог</th><th>Договор</th><th>Статус</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rentals.forEach(r => { %>
+              <tr>
+                <td><%= r.id %></td>
+                <td><%= r.item_title %></td>
+                <td><%= r.customer_name %><% if (r.login) { %> (<%= r.login %>)<% } %></td>
+                <td><%= r.phone %></td>
+                <td><%= r.rent_from %> — <%= r.rent_to %><br><small><%= r.period_type === 'week' ? 'по неделям' : 'по дням' %></small></td>
+                <td><%= r.amount ? r.amount.toLocaleString('ru-RU') + ' ₽' : '—' %></td>
+                <td><%= r.deposit_amount ? r.deposit_amount.toLocaleString('ru-RU') + ' ₽' : '—' %></td>
+                <td><% if (r.contract_file) { %><a href="/rent/contract/<%= r.id %>" target="_blank" rel="noopener">Открыть</a><% } else { %>—<% } %></td>
+                <td><%= r.status %></td>
+                <td>
+                  <form method="POST" action="/admin/rentals/<%= r.id %>/status" class="inline-form">
+                    <select name="status" onchange="this.form.submit()">
+                      <% ['new','confirmed','active','done','cancelled'].forEach(s => { %>
+                        <option value="<%= s %>" <%= r.status === s ? 'selected' : '' %>><%= s %></option>
+                      <% }) %>
+                    </select>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

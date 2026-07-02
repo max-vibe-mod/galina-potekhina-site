@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+<section class="section auth-section">
+  <div class="container auth-container">
+    <div class="auth-card">
+      <h1>Вход</h1>
+      <div class="ornament-line center"></div>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form method="POST" action="/login" class="form">
+        <input type="hidden" name="next" value="<%= next %>">
+        <div class="form-group">
+          <label for="login">Логин</label>
+          <input type="text" id="login" name="login" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Пароль</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-luxury btn-block">Войти</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

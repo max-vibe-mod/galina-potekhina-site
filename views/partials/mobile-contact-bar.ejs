@@ -1,0 +1,27 @@
+<% if (settings.phone || socialLinks.whatsapp || socialLinks.telegram || socialLinks.max) { %>
+
+<div class="mobile-contact-bar" aria-label="Быстрая связь">
+
+  <% if (settings.phone) { %>
+
+    <a href="<%= phoneHref(settings.phone) %>" class="mobile-contact-btn">Позвонить</a>
+
+  <% } %>
+
+  <% if (socialLinks.whatsapp) { %>
+
+    <a href="<%= socialLinks.whatsapp %>" target="_blank" rel="noopener noreferrer" class="mobile-contact-btn mobile-contact-btn--gold">WhatsApp</a>
+
+  <% } else if (socialLinks.telegram) { %>
+
+    <a href="<%= socialLinks.telegram %>" target="_blank" rel="noopener noreferrer" class="mobile-contact-btn mobile-contact-btn--gold">Telegram</a>
+
+  <% } else if (socialLinks.max) { %>
+
+    <a href="<%= socialLinks.max %>" target="_blank" rel="noopener noreferrer" class="mobile-contact-btn mobile-contact-btn--gold">MAX</a>
+
+  <% } %>
+
+</div>
+
+<% } %>
