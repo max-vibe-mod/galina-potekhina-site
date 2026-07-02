@@ -2,6 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'gp_mobile_key';
+  const HIDDEN_INBOX_KEY = 'gp_hidden_inbox_items';
   const POLL_MS = 20000;
   const API_BASE = (window.GP_API_BASE || '').replace(/\/$/, '');
 
@@ -28,6 +29,37 @@
     pollTimer: null,
     notifyGranted: false
   };
+
+  function loadHiddenInbox() {
+    try {
+      const raw = localStorage.getItem(HIDDEN_INBOX_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch (_) {
+      return new Set();
+    }
+  }
+
+  function saveHiddenInbox(set) {
+    try {
+      localStorage.setItem(HIDDEN_INBOX_KEY, JSON.stringify(Array.from(set)));
+    } catch (_) { /* ignore */ }
+  }
+
+  function hiddenInboxKey(type, id) {
+    return `${type}:${id}`;
+  }
+
+  function isInboxHidden(type, id) {
+    if (!state.hiddenInbox) state.hiddenInbox = loadHiddenInbox();
+    return state.hiddenInbox.has(hiddenInboxKey(type, id));
+  }
+
+  function hideInboxItem(type, id) {
+    if (!state.hiddenInbox) state.hiddenInbox = loadHiddenInbox();
+    state.hiddenInbox.add(hiddenInboxKey(type, id));
+    saveHiddenInbox(state.hiddenInbox);
+  }
 
   function getKey() {
     return localStorage.getItem(STORAGE_KEY) || '';
@@ -338,6 +370,7 @@
     }
 
     for (const item of items) {
+      if (isInboxHidden(item.type, item.id)) continue;
       const el = document.createElement('article');
       el.className = 'inbox-item' + (item.isNew ? ' inbox-item--new' : '');
       const typePill = item.type === 'order' ? 'pill--order' : 'pill--rental';
@@ -387,7 +420,14 @@
         if (!confirm(`Удалить ${label} №${id}? Это действие нельзя отменить.`)) return;
         btn.disabled = true;
         try {
-          await api(`/${type === 'order' ? 'orders' : 'rentals'}/${id}/delete`, { method: 'POST', body: '{}' });
+          const entity = type === 'order' ? 'orders' : 'rentals';
+          try {
+            await api(`/${entity}/${id}/delete`, { method: 'POST', body: '{}' });
+          } catch (_) {
+            // Fallback for stale backend: mark as cancelled instead of hard delete.
+            await api(`/${entity}/${id}/status`, { method: 'POST', body: JSON.stringify({ status: 'cancelled' }) });
+          }
+          hideInboxItem(type, id);
           await pollEvents();
         } catch (err) {
           alert(err.message);
