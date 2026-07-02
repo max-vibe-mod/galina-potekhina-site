@@ -2,10 +2,10 @@
 <% const f = locals.form || null; const p = locals.prefill || null; %>
 <section class="section rent-page">
   <div class="container order-layout">
-    <p class="order-back"><a href="/#collection-rent" class="link-back">← Назад к аренде</a></p>
+    <p class="order-back"><a href="/#collection-rent" class="link-back">← Назад к аренде платьев</a></p>
     <div class="order-product">
-      <img src="<%= item.image_path %>" alt="<%= item.title %>">
-      <h1><%= item.title %></h1>
+      <img src="<%= item.image_path %>" alt="Аренда платья «<%= item.title %>» во Владивостоке — Galina Potekhina">
+      <h1>Аренда платья «<%= item.title %>» — Владивосток</h1>
       <% if (item.description) { %><p class="gallery-desc"><%= item.description %></p><% } %>
 
       <div class="rent-price-card">

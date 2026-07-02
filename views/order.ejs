@@ -4,8 +4,8 @@
   <div class="container order-layout">
     <p class="order-back"><a href="/#collection-buy" class="link-back">← Назад к коллекции</a></p>
     <div class="order-product">
-      <img src="<%= item.image_path %>" alt="<%= item.title %>">
-      <h1><%= item.title %></h1>
+      <img src="<%= item.image_path %>" alt="Купить платье «<%= item.title %>» во Владивостоке — Galina Potekhina">
+      <h1>Заказать платье «<%= item.title %>» — Владивосток</h1>
       <% if (item.description) { %><p><%= item.description %></p><% } %>
       <% if (item.price > 0) { %>
         <p class="gallery-price"><%= item.price.toLocaleString('ru-RU') %> ₽</p>

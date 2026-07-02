@@ -9,7 +9,7 @@ const { attachUser } = require('./middleware/auth');
 const { getSettings } = require('./utils/settings');
 const { getSocialLinks } = require('./utils/socialLinks');
 const { expireOldBonuses } = require('./utils/loyalty');
-const { getSiteUrl, pageMeta, homeMeta, buildJsonLd } = require('./utils/seo');
+const { getSiteUrl, pageMeta, homeMeta, buildJsonLd, buildHomeJsonLd, SEO_FAQ } = require('./utils/seo');
 const { formatPhoneDisplay, phoneTelHref } = require('./utils/formatPhone');
 
 const PORT = process.env.PORT || 3000;
@@ -94,6 +94,8 @@ async function start() {
     res.render('index', {
       title: 'Galina Potekhina',
       meta: homeMeta(),
+      jsonLd: buildHomeJsonLd(res.locals.settings, res.locals.siteUrl, res.locals.socialLinks, eveningGallery),
+      seoFaq: SEO_FAQ,
       isHome: true,
       eveningGallery
     });

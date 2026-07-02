@@ -1,0 +1,26 @@
+<% const faqItems = (typeof seoFaq !== 'undefined' && seoFaq) ? seoFaq : []; %>
+<section id="faq" class="section faq-section" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-label">Вопросы</span>
+      <h2 id="faq-heading">Частые вопросы о пошиве, покупке и аренде платьев</h2>
+      <p class="section-lead">Ответы для тех, кто ищет во Владивостоке: заказать платье, сшить на заказ, купить готовую модель или взять в аренду на торжество</p>
+    </div>
+
+    <div class="faq-list reveal">
+      <% faqItems.forEach((item, i) => { %>
+        <details class="faq-item"<%= i === 0 ? ' open' : '' %>>
+          <summary class="faq-question"><%= item.q %></summary>
+          <div class="faq-answer">
+            <p><%= item.a %></p>
+          </div>
+        </details>
+      <% }) %>
+    </div>
+
+    <div class="faq-cta reveal">
+      <p>Не нашли ответ? Позвоните или напишите — поможем с выбором и расскажем о пошиве, покупке и аренде.</p>
+      <a href="#contacts" class="btn btn-luxury">Связаться со студией</a>
+    </div>
+  </div>
+</section>

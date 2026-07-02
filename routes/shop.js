@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const db = require('../db/database');
-const { orderMeta, rentMeta } = require('../utils/seo');
+const { orderMeta, rentMeta, buildOrderJsonLd, buildRentJsonLd } = require('../utils/seo');
 const { getSettings } = require('../utils/settings');
 const {
   getActiveBonusBalance,
@@ -102,6 +102,7 @@ router.get('/order/:id', (req, res) => {
   res.render('order', {
     title: 'Заказ — ' + item.title,
     meta: orderMeta(item),
+    jsonLd: buildOrderJsonLd(item, res.locals.siteUrl),
     item,
     bonusBalance,
     prefill,
@@ -144,6 +145,7 @@ router.get('/rent/:id', (req, res) => {
   res.render('rent', {
     title: 'Аренда — ' + item.title,
     meta: rentMeta(item),
+    jsonLd: buildRentJsonLd(item, res.locals.siteUrl),
     item,
     dressValue: dv,
     depositPreview: calcDeposit(dv),
@@ -178,6 +180,7 @@ router.post('/order/:id', async (req, res, next) => {
       return res.render('order', {
         title: 'Заказ — ' + item.title,
         meta: orderMeta(item),
+        jsonLd: buildOrderJsonLd(item, res.locals.siteUrl),
         item,
         bonusBalance,
         prefill,
@@ -269,6 +272,7 @@ router.post('/rent/:id', async (req, res, next) => {
     const renderRent = (error, extra = {}) => res.render('rent', {
       title: 'Аренда — ' + item.title,
       meta: rentMeta(item),
+      jsonLd: buildRentJsonLd(item, res.locals.siteUrl),
       item,
       dressValue: dv,
       depositPreview: calcDeposit(dv),
