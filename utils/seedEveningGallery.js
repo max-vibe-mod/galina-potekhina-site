@@ -263,7 +263,31 @@ function ensureEveningGallery() {
 
     const exists = db.prepare('SELECT id FROM gallery WHERE image_path = ?').get(imagePath);
 
-  const src = fs.existsSync(item.src)
+    if (fs.existsSync(dest)) {
+      const rent = rentFromPrice(item.price);
+      if (exists) {
+        db.prepare(`
+          UPDATE gallery SET title = ?, description = ?, price = ?, sort_order = ?,
+            for_rent = 1, for_order = 1, rent_price_day = ?, rent_price_week = ?, category = 'evening_couture', active = 1
+          WHERE image_path = ?
+        `).run(
+          item.title, item.description, item.price, item.sort_order,
+          rent.rent_price_day, rent.rent_price_week, imagePath
+        );
+      } else {
+        db.prepare(`
+          INSERT INTO gallery (title, description, price, image_path, active, sort_order, for_order, for_rent, rent_price_day, rent_price_week, category)
+          VALUES (?, ?, ?, ?, 1, ?, 1, 1, ?, ?, 'evening_couture')
+        `).run(
+          item.title, item.description, item.price, imagePath, item.sort_order,
+          rent.rent_price_day, rent.rent_price_week
+        );
+        console.log(`[evening-gallery] Добавлено: ${item.title}`);
+      }
+      continue;
+    }
+
+    const src = fs.existsSync(item.src)
     ? item.src
     : fs.existsSync(path.join(UPLOAD_DIR, '..', 'children', `${item.fileKey}.png`))
       ? path.join(UPLOAD_DIR, '..', 'children', `${item.fileKey}.png`)

@@ -6,6 +6,7 @@ const path = require('path');
 
 const sources = [
   path.join(__dirname, '..', 'логотипы', 'logo-studia-poshiv-final.png'),
+  path.join(__dirname, '..', 'public', 'logos-concepts', 'round-poshiv-ru', 'poshiv-round-07-princess-puffy.png'),
   path.join(
     process.env.USERPROFILE || '',
     '.cursor', 'projects', 'c-Users-vladp-OneDrive-Desktop', 'assets',

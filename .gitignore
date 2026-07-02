@@ -4,6 +4,8 @@ data/backups/
 .env.local
 public/uploads/*
 !public/uploads/.gitkeep
+!public/uploads/evening/
+!public/uploads/evening/**
 data/.gitkeep
 .DS_Store
 *.log

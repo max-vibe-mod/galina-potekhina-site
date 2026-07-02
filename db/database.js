@@ -116,7 +116,7 @@ function runMigrations(db) {
   `);
 
   const defaults = {
-    phone: '+7 (___) ___-__-__',
+    phone: '79025553805',
     telegram: 'https://t.me/GalinaPotekhina',
     whatsapp: 'https://wa.me/qr/ZHY7G4YUTOHYL1',
     vk: '',
@@ -163,6 +163,8 @@ function runMigrations(db) {
     WHERE key = 'telegram' AND (value = '' OR value NOT LIKE '%GalinaPotekhina%')`);
   db.run(`UPDATE site_settings SET value = 'https://www.instagram.com/atelier.galina?igsh=MWRwY2wxYW81dHgwdw=='
     WHERE key = 'instagram' AND (value = '' OR value NOT LIKE '%atelier.galina%')`);
+  db.run(`UPDATE site_settings SET value = '79025553805'
+    WHERE key = 'phone' AND (value = '' OR value LIKE '%___%' OR value = '+7 (___) ___-__-__')`);
 
   addColumnIfNotExists(db, 'orders', 'estimated_date', 'TEXT');
   addColumnIfNotExists(db, 'orders', 'stage_note', 'TEXT');
