@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#b8975a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GP Админ">
+  <title>GP Админ</title>
+  <link rel="manifest" href="/admin/manifest.json">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <header class="app-header">
+    <img src="/logo.png" alt="" width="40" height="40">
+    <div>
+      <h1>GP Админ</h1>
+      <p>Управление сайтом</p>
+    </div>
+  </header>
+
+  <main>
+    <div id="install-banner" class="install-banner" hidden>
+      <strong>Установить как приложение</strong>
+      <p id="install-hint">Добавьте на главный экран для быстрого доступа.</p>
+      <button type="button" class="btn btn-gold" id="btn-install" hidden>Установить</button>
+    </div>
+
+    <!-- Подключение -->
+    <section id="panel-connect" class="panel is-active">
+      <div class="card">
+        <h2>GitHub Token</h2>
+        <p class="hint">Нужен Personal Access Token с правом <code>repo</code>. Хранится только на вашем телефоне.</p>
+        <label for="gh-token">PAT (ghp_…)</label>
+        <div class="token-row">
+          <input type="password" id="gh-token" autocomplete="off" placeholder="Вставьте токен">
+          <button type="button" class="token-toggle" id="token-toggle" aria-label="Показать">👁</button>
+        </div>
+        <label for="gh-repo">Репозиторий</label>
+        <input type="text" id="gh-repo" value="max-vibe-mod/galina-potekhina-site" readonly>
+        <button type="button" class="btn btn-gold" id="btn-save-token">Сохранить и проверить</button>
+        <div id="connect-status" class="status"></div>
+      </div>
+      <div class="card">
+        <h2>Как это работает</h2>
+        <p class="hint">Фото и тексты уходят в GitHub → Render пересобирает сайт (2–5 мин). Договоры аренды не затрагиваются.</p>
+      </div>
+    </section>
+
+    <!-- Коллекция -->
+    <section id="panel-gallery" class="panel">
+      <div class="card">
+        <h2>Текущая коллекция</h2>
+        <button type="button" class="btn btn-ghost" id="btn-refresh-gallery">Обновить список</button>
+        <div id="gallery-grid" class="gallery-grid" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h2>Новое платье</h2>
+        <label class="file-pick" id="file-pick">
+          <input type="file" id="photo-input" accept="image/*" capture="environment">
+          <span id="file-pick-label">📷 Нажмите — выбрать фото</span>
+        </label>
+        <img id="photo-preview" class="preview-img" alt="" hidden>
+        <label for="dress-title">Название</label>
+        <input type="text" id="dress-title" placeholder="Например: Лунный блеск">
+        <label for="dress-desc">Описание</label>
+        <textarea id="dress-desc" placeholder="Краткое описание платья"></textarea>
+        <label for="dress-price">Цена покупки (₽)</label>
+        <input type="number" id="dress-price" min="0" step="1000" placeholder="98000">
+        <button type="button" class="btn btn-gold" id="btn-upload-dress">Загрузить в GitHub</button>
+        <div id="upload-status" class="status"></div>
+      </div>
+    </section>
+
+    <!-- Тексты -->
+    <section id="panel-texts" class="panel">
+      <div class="card">
+        <h2>Тексты на сайте</h2>
+        <p class="hint">Изменения сохраняются в <code>gallery-catalog.json</code> и применяются после деплоя Render.</p>
+        <label for="set-phone">Телефон</label>
+        <input type="tel" id="set-phone" placeholder="79025553805">
+        <label for="set-hero-title">Заголовок</label>
+        <input type="text" id="set-hero-title" placeholder="Галина Потехина">
+        <label for="set-hero-sub">Подзаголовок</label>
+        <input type="text" id="set-hero-sub" placeholder="Студия пошива…">
+        <button type="button" class="btn btn-gold" id="btn-save-texts">Сохранить тексты в GitHub</button>
+        <div id="texts-status" class="status"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Разделы">
+    <button type="button" data-panel="connect" class="is-active"><span class="ico">🔑</span>Токен</button>
+    <button type="button" data-panel="gallery"><span class="ico">👗</span>Коллекция</button>
+    <button type="button" data-panel="texts"><span class="ico">✏️</span>Тексты</button>
+  </nav>
+
+  <script src="/admin/app.js" defer></script>
+</body>
+</html>

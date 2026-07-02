@@ -23,12 +23,14 @@ async function start() {
 
   const { setSetting } = require('./utils/settings');
   const { ensureEveningGallery } = require('./utils/seedEveningGallery');
+  const { syncGalleryCatalog } = require('./utils/syncGalleryCatalog');
   const { syncRentPrices } = require('./utils/syncRentPrices');
   setSetting('rental_title', 'Аренда платьев');
   setSetting('rental_text', 'Арендуйте авторские платья студии для съёмок, мероприятий и особых случаев. Каждое платье — единственное в своём исполнении.');
   setSetting('rental_how_text', 'Выберите платье, заполните заявку на сайте — рассчитаем аренду по дням или неделям и сформируем проект договора. Подпись Галины — при выдаче в студии.');
 
   ensureEveningGallery();
+  syncGalleryCatalog();
   syncRentPrices();
 
   const authRoutes = require('./routes/auth');
