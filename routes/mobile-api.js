@@ -126,7 +126,7 @@ router.post('/gallery', (req, res, next) => {
     if (err) return res.status(400).json({ error: err.message || 'Ошибка загрузки' });
     next();
   });
-}, (req, res) => {
+}, async (req, res) => {
   try {
     const title = (req.body.title || '').trim();
     const description = (req.body.description || '').trim();
@@ -135,8 +135,15 @@ router.post('/gallery', (req, res, next) => {
     if (!title) return res.status(400).json({ error: 'Укажите название' });
     if (!req.file) return res.status(400).json({ error: 'Выберите фото' });
 
+    const { resizeGalleryImage } = require('../utils/resizeGalleryImage');
+    const processedPath = path.join(eveningDir, `processed-${Date.now()}.jpg`);
+    await resizeGalleryImage(req.file.path, processedPath);
+    if (fs.existsSync(req.file.path)) {
+      try { fs.unlinkSync(req.file.path); } catch (_) { /* ignore */ }
+    }
+    const finalName = path.basename(processedPath);
+    const imagePath = `/uploads/evening/${finalName}`;
     const { rent_price_day, rent_price_week } = suggestRentPrices(price);
-    const imagePath = `/uploads/evening/${req.file.filename}`;
     const maxSort = db.prepare('SELECT COALESCE(MAX(sort_order), 0) as m FROM gallery').get().m;
 
     const result = db.prepare(`
@@ -188,7 +195,8 @@ router.post('/gallery/:id/photo', (req, res, next) => {
     if (err) return res.status(400).json({ error: err.message || 'Ошибка загрузки' });
     next();
   });
-}, (req, res) => {
+}, async (req, res) => {
+  try {
   const item = db.prepare('SELECT * FROM gallery WHERE id = ?').get(req.params.id);
   if (!item) return res.status(404).json({ error: 'Платье не найдено' });
   if (!req.file) return res.status(400).json({ error: 'Выберите фото' });
@@ -199,13 +207,23 @@ router.post('/gallery/:id/photo', (req, res, next) => {
     try { fs.unlinkSync(oldPath); } catch (_) { /* ignore */ }
   }
 
-  const imagePath = `/uploads/evening/${req.file.filename}`;
+  const { resizeGalleryImage } = require('../utils/resizeGalleryImage');
+  const processedPath = path.join(eveningDir, `processed-${Date.now()}.jpg`);
+  await resizeGalleryImage(req.file.path, processedPath);
+  if (fs.existsSync(req.file.path)) {
+    try { fs.unlinkSync(req.file.path); } catch (_) { /* ignore */ }
+  }
+
+  const imagePath = `/uploads/evening/${path.basename(processedPath)}`;
   db.prepare('UPDATE gallery SET image_path = ? WHERE id = ?').run(imagePath, item.id);
 
   res.json({
     ok: true,
     item: db.prepare('SELECT * FROM gallery WHERE id = ?').get(item.id)
   });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 router.post('/gallery/:id/toggle', (req, res) => {

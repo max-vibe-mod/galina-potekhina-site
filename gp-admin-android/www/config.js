@@ -1,1 +1,1 @@
-window.GP_API_BASE = 'http://localhost:3000';
+window.GP_API_BASE = 'https://galina-potekhina-site.onrender.com';
