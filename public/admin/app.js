@@ -274,19 +274,13 @@
     $('#set-hero-sub').value = s.hero_subtitle || '';
     $('#set-rental-title').value = s.rental_title || '';
     $('#set-rental-text').value = s.rental_text || '';
-    const hint = $('#telegram-hint');
-    if (hint) {
-      hint.textContent = s.telegramConfigured === false
-        ? 'Telegram не настроен на сервере. Добавьте ADMIN_TELEGRAM_BOT_TOKEN в Render.'
-        : 'Telegram подключён — уведомления приходят даже когда приложение закрыто.';
-    }
   }
 
   async function refreshBootstrap() {
     const data = await api('/bootstrap');
     state.gallery = data.gallery || [];
     state.counts = data.counts || {};
-    if (data.settings) fillSettings({ ...data.settings, telegramConfigured: data.telegramConfigured });
+    if (data.settings) fillSettings(data.settings);
     renderGallery();
     updateBadges();
   }

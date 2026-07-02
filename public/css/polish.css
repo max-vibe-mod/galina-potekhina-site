@@ -582,9 +582,15 @@ h1, h2, h3 {
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-.page-home--video .site-header:not(.scrolled) .logo-frame {
+.page-home--video .site-header:not(.scrolled) .logo-frame:not(.logo-frame--round) {
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 4px 22px rgba(0, 0, 0, 0.28);
+}
+
+.page-home--video .site-header:not(.scrolled) .logo-frame--round {
+  background: transparent;
+  box-shadow: none;
+  border: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

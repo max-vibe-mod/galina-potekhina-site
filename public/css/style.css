@@ -147,7 +147,9 @@ h1, h2, h3 {
   height: 58px;
   width: 58px;
   max-width: none;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 50%;
+  background: transparent;
   filter: drop-shadow(0 2px 8px rgba(13, 13, 13, 0.12));
 }
 
@@ -155,6 +157,8 @@ h1, h2, h3 {
   height: min(300px, 62vw);
   width: min(300px, 62vw);
   max-width: min(300px, 62vw);
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .logo-frame--round.logo-frame--about .logo-img {
