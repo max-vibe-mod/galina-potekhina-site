@@ -1,5 +1,5 @@
 /**
- * Круглый логотип PNG + текст «Студия пошива Галины Потехиной».
+ * Круглый логотип PNG с текстом «Студия пошива Галины Потехиной».
  */
 const fs = require('fs');
 const path = require('path');
@@ -11,6 +11,7 @@ const assetsDir = path.join(
 );
 
 const candidates = [
+  path.join(assetsDir, 'c__Users_vladp_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-104d00ce-cfc9-4e17-9c21-845ae7dd04aa.png'),
   path.join(assetsDir, 'c__Users_vladp_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-474f79f4-f28d-4d61-ae79-866ce3171fdf.png'),
   path.join(assetsDir, 'c__Users_vladp_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-a4212fca-8c22-4bc5-ac77-7161fadc71f3.png'),
   path.join(__dirname, '..', 'логотипы', 'logo-studia-poshiv-final.png')
@@ -18,7 +19,7 @@ const candidates = [
 
 const out = path.join(__dirname, '..', 'public', 'logo.png');
 const outIcon = path.join(__dirname, '..', 'public', 'admin', 'icon-192.png');
-const outCopy = path.join(__dirname, '..', 'логотипы', 'logo-studia-poshiv-final.png');
+const outAppIcon = path.join(__dirname, '..', 'gp-admin-android', 'www', 'app-icon-source.png');
 
 const src = candidates.find((p) => fs.existsSync(p));
 if (!src) {
@@ -26,17 +27,17 @@ if (!src) {
   process.exit(1);
 }
 
-const SIZE = 512;
+const SIZE = 1024;
 const CREAM = '#ede6d8';
 const GOLD = '#8f7340';
 
-const mask = Buffer.from(`<svg width="${SIZE}" height="${SIZE}"><circle cx="256" cy="256" r="252" fill="white"/></svg>`);
+const mask = Buffer.from(`<svg width="${SIZE}" height="${SIZE}"><circle cx="512" cy="512" r="508" fill="white"/></svg>`);
 
 const textSvg = Buffer.from(`<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="118" cy="168" rx="108" ry="78" fill="${CREAM}"/>
-  <text x="118" y="142" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="700" fill="${GOLD}">Студия пошива</text>
-  <text x="118" y="172" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="700" fill="${GOLD}">Галины</text>
-  <text x="118" y="198" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="700" fill="${GOLD}">Потехиной</text>
+  <rect x="36" y="248" width="360" height="280" rx="12" fill="${CREAM}"/>
+  <text x="216" y="330" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" fill="${GOLD}">Студия пошива</text>
+  <text x="216" y="400" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700" fill="${GOLD}">Галины</text>
+  <text x="216" y="468" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700" fill="${GOLD}">Потехиной</text>
 </svg>`);
 
 async function run() {
@@ -65,10 +66,12 @@ async function run() {
 
   await sharp(final).toFile(out);
   await sharp(final).resize(192, 192).toFile(outIcon);
+  await sharp(final).resize(512, 512).toFile(outAppIcon);
 
-  fs.mkdirSync(path.dirname(outCopy), { recursive: true });
-  fs.copyFileSync(out, outCopy);
-  console.log('Логотип готов:', out, 'из', src);
+  const copyDir = path.join(__dirname, '..', 'логотипы');
+  fs.mkdirSync(copyDir, { recursive: true });
+  fs.copyFileSync(out, path.join(copyDir, 'logo-studia-poshiv-final.png'));
+  console.log('Логотип готов:', out, 'из', path.basename(src));
 }
 
 run().catch((e) => {
