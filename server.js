@@ -37,6 +37,7 @@ async function start() {
   const adminRoutes = require('./routes/admin');
   const shopRoutes = require('./routes/shop');
   const accountRoutes = require('./routes/account');
+  const seoRoutes = require('./routes/seo');
   const mobileApiRoutes = require('./routes/mobile-api');
 
   const app = express();
