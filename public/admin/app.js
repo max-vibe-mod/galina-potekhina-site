@@ -68,14 +68,19 @@
 
   async function api(path, options) {
     const key = getKey();
-    const res = await fetch(apiUrl(path), {
-      ...options,
-      headers: {
-        Authorization: 'Bearer ' + key,
-        ...(options && options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-        ...(options && options.headers ? options.headers : {})
-      }
-    });
+    let res;
+    try {
+      res = await fetch(apiUrl(path), {
+        ...options,
+        headers: {
+          Authorization: 'Bearer ' + key,
+          ...(options && options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+          ...(options && options.headers ? options.headers : {})
+        }
+      });
+    } catch (err) {
+      throw new Error('Нет связи с сервером. Проверьте интернет или подождите минуту — сайт на Render может просыпаться.');
+    }
 
     const text = await res.text();
     let data;
