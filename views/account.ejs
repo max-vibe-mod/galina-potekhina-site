@@ -1,32 +1,32 @@
-<%- include('partials/header') %>
+﻿<%- include('partials/header') %>
 
 <section class="section dashboard-section">
   <div class="container">
     <div class="dashboard-header reveal">
       <div>
         <span class="section-label">Client Area</span>
-        <h1>Личный кабинет</h1>
+        <h1>Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚</h1>
       </div>
     </div>
 
-    <% if (saved === 'profile') { %><div class="alert alert-success">Профиль обновлён</div><% } %>
-    <% if (saved === 'measurements') { %><div class="alert alert-success">Мерки сохранены</div><% } %>
-    <% if (saved === 'fitting') { %><div class="alert alert-success">Запись на примерку подтверждена</div><% } %>
-    <% if (saved === 'cancel') { %><div class="alert alert-success">Заказ отменён</div><% } %>
-    <% if (saved === 'media') { %><div class="alert alert-success">Запрос фото/видео отправлен</div><% } %>
-    <% if (saved === 'change') { %><div class="alert alert-success">Запрос на изменение отправлен</div><% } %>
-    <% if (error === 'slot') { %><div class="alert alert-error">Это время уже занято</div><% } %>
-    <% if (error === 'cancel') { %><div class="alert alert-error">Нельзя отменить этот заказ</div><% } %>
-    <% if (error === 'confirm') { %><div class="alert alert-error">Подтвердите, что согласны с возможной доплатой</div><% } %>
-    <% if (error === 'empty') { %><div class="alert alert-error">Заполните текст запроса</div><% } %>
+    <% if (saved === 'profile') { %><div class="alert alert-success">РџСЂРѕС„РёР»СЊ РѕР±РЅРѕРІР»С‘РЅ</div><% } %>
+    <% if (saved === 'measurements') { %><div class="alert alert-success">РњРµСЂРєРё СЃРѕС…СЂР°РЅРµРЅС‹</div><% } %>
+    <% if (saved === 'fitting') { %><div class="alert alert-success">Р—Р°РїРёСЃСЊ РЅР° РїСЂРёРјРµСЂРєСѓ РїРѕРґС‚РІРµСЂР¶РґРµРЅР°</div><% } %>
+    <% if (saved === 'cancel') { %><div class="alert alert-success">Р—Р°РєР°Р· РѕС‚РјРµРЅС‘РЅ</div><% } %>
+    <% if (saved === 'media') { %><div class="alert alert-success">Р—Р°РїСЂРѕСЃ С„РѕС‚Рѕ/РІРёРґРµРѕ РѕС‚РїСЂР°РІР»РµРЅ</div><% } %>
+    <% if (saved === 'change') { %><div class="alert alert-success">Р—Р°РїСЂРѕСЃ РЅР° РёР·РјРµРЅРµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅ</div><% } %>
+    <% if (error === 'slot') { %><div class="alert alert-error">Р­С‚Рѕ РІСЂРµРјСЏ СѓР¶Рµ Р·Р°РЅСЏС‚Рѕ</div><% } %>
+    <% if (error === 'cancel') { %><div class="alert alert-error">РќРµР»СЊР·СЏ РѕС‚РјРµРЅРёС‚СЊ СЌС‚РѕС‚ Р·Р°РєР°Р·</div><% } %>
+    <% if (error === 'confirm') { %><div class="alert alert-error">РџРѕРґС‚РІРµСЂРґРёС‚Рµ, С‡С‚Рѕ СЃРѕРіР»Р°СЃРЅС‹ СЃ РІРѕР·РјРѕР¶РЅРѕР№ РґРѕРїР»Р°С‚РѕР№</div><% } %>
+    <% if (error === 'empty') { %><div class="alert alert-error">Р—Р°РїРѕР»РЅРёС‚Рµ С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°</div><% } %>
 
     <nav class="dashboard-nav reveal">
-      <a href="#overview" class="dash-nav-link active">Обзор</a>
-      <a href="#bonuses" class="dash-nav-link">Бонусы</a>
-      <a href="#orders-active" class="dash-nav-link">Заказы</a>
-      <a href="#rentals" class="dash-nav-link">Аренда</a>
-      <a href="#measurements" class="dash-nav-link">Мерки</a>
-      <a href="#fitting" class="dash-nav-link">Примерка</a>
+      <a href="#overview" class="dash-nav-link active">РћР±Р·РѕСЂ</a>
+      <a href="#bonuses" class="dash-nav-link">Р‘РѕРЅСѓСЃС‹</a>
+      <a href="#orders-active" class="dash-nav-link">Р—Р°РєР°Р·С‹</a>
+      <a href="#rentals" class="dash-nav-link">РђСЂРµРЅРґР°</a>
+      <a href="#measurements" class="dash-nav-link">РњРµСЂРєРё</a>
+      <a href="#fitting" class="dash-nav-link">РџСЂРёРјРµСЂРєР°</a>
     </nav>
 
     <div id="overview" class="dashboard-block reveal">
@@ -37,27 +37,27 @@
             <div class="loyalty-card-chip" aria-hidden="true"></div>
             <div class="loyalty-card-top">
               <span class="logo-frame logo-frame--xs">
-                <img src="/logo.png?v=8" alt="Студия пошива Галины Потехиной" class="loyalty-logo">
+                <img src="/logo.png?v=9" alt="РЎС‚СѓРґРёСЏ РїРѕС€РёРІР° Р“Р°Р»РёРЅС‹ РџРѕС‚РµС…РёРЅРѕР№" class="loyalty-logo">
               </span>
               <span class="loyalty-brand">Galina Potekhina</span>
             </div>
-            <p class="loyalty-label">Карта лояльности</p>
+            <p class="loyalty-label">РљР°СЂС‚Р° Р»РѕСЏР»СЊРЅРѕСЃС‚Рё</p>
             <p class="loyalty-login"><%= user.login %></p>
             <div class="loyalty-balance">
-              <span class="balance-label">Баланс</span>
-              <span class="balance-value"><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> ₽</span>
+              <span class="balance-label">Р‘Р°Р»Р°РЅСЃ</span>
+              <span class="balance-value"><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> в‚Ѕ</span>
             </div>
           </div>
         </div>
         <div class="account-info">
-          <h2>Профиль</h2>
+          <h2>РџСЂРѕС„РёР»СЊ</h2>
           <form method="POST" action="/account/profile" class="form form-luxury">
             <div class="form-group">
-              <label>Логин</label>
+              <label>Р›РѕРіРёРЅ</label>
               <input type="text" value="<%= user.login %>" disabled>
             </div>
             <div class="form-group">
-              <label for="full_name">Имя / ФИО</label>
+              <label for="full_name">РРјСЏ / Р¤РРћ</label>
               <input type="text" id="full_name" name="full_name" value="<%= user.full_name || '' %>">
             </div>
             <div class="form-group">
@@ -65,36 +65,36 @@
               <input type="email" id="email" name="email" value="<%= user.email || '' %>">
             </div>
             <div class="form-group">
-              <label for="phone">Телефон</label>
+              <label for="phone">РўРµР»РµС„РѕРЅ</label>
               <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
             </div>
-            <button type="submit" class="btn btn-luxury btn-sm">Сохранить</button>
+            <button type="submit" class="btn btn-luxury btn-sm">РЎРѕС…СЂР°РЅРёС‚СЊ</button>
           </form>
-          <p class="hint">Регистрация: <%= new Date(user.created_at).toLocaleDateString('ru-RU') %></p>
+          <p class="hint">Р РµРіРёСЃС‚СЂР°С†РёСЏ: <%= new Date(user.created_at).toLocaleDateString('ru-RU') %></p>
         </div>
       </div>
     </div>
 
     <div id="bonuses" class="dashboard-block reveal">
-      <h2>Клуб привилегий</h2>
-      <p class="block-desc">Бонусы начисляются автоматически при заказах и действуют <%= bonusRules.BONUS_DAYS %> дней.</p>
+      <h2>РљР»СѓР± РїСЂРёРІРёР»РµРіРёР№</h2>
+      <p class="block-desc">Р‘РѕРЅСѓСЃС‹ РЅР°С‡РёСЃР»СЏСЋС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїСЂРё Р·Р°РєР°Р·Р°С… Рё РґРµР№СЃС‚РІСѓСЋС‚ <%= bonusRules.BONUS_DAYS %> РґРЅРµР№.</p>
       <ul class="bonus-info bonus-info-card">
-        <li>Первый заказ от <%= bonusRules.BONUS_THRESHOLD.toLocaleString('ru-RU') %> ₽ — <strong><%= bonusRules.FIRST_ORDER_BONUS %> бонусов</strong></li>
-        <li>Каждый заказ от <%= bonusRules.BONUS_THRESHOLD.toLocaleString('ru-RU') %> ₽ — <strong>+<%= bonusRules.BONUS_PERCENT * 100 %>%</strong></li>
-        <li>Текущий баланс: <strong><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> ₽</strong></li>
+        <li>РџРµСЂРІС‹Р№ Р·Р°РєР°Р· РѕС‚ <%= bonusRules.BONUS_THRESHOLD.toLocaleString('ru-RU') %> в‚Ѕ вЂ” <strong><%= bonusRules.FIRST_ORDER_BONUS %> Р±РѕРЅСѓСЃРѕРІ</strong></li>
+        <li>РљР°Р¶РґС‹Р№ Р·Р°РєР°Р· РѕС‚ <%= bonusRules.BONUS_THRESHOLD.toLocaleString('ru-RU') %> в‚Ѕ вЂ” <strong>+<%= bonusRules.BONUS_PERCENT * 100 %>%</strong></li>
+        <li>РўРµРєСѓС‰РёР№ Р±Р°Р»Р°РЅСЃ: <strong><%= Math.floor(bonusBalance).toLocaleString('ru-RU') %> в‚Ѕ</strong></li>
       </ul>
       <% if (bonusHistory.length > 0) { %>
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>Дата</th><th>Начислено</th><th>Остаток</th><th>Истекает</th><th>Статус</th></tr></thead>
+            <thead><tr><th>Р”Р°С‚Р°</th><th>РќР°С‡РёСЃР»РµРЅРѕ</th><th>РћСЃС‚Р°С‚РѕРє</th><th>РСЃС‚РµРєР°РµС‚</th><th>РЎС‚Р°С‚СѓСЃ</th></tr></thead>
             <tbody>
               <% bonusHistory.forEach(b => { %>
                 <tr class="<%= b.expired ? 'row-expired' : '' %>">
                   <td><%= new Date(b.earned_at).toLocaleDateString('ru-RU') %></td>
-                  <td><%= b.amount %> ₽</td>
-                  <td><%= b.remaining %> ₽</td>
+                  <td><%= b.amount %> в‚Ѕ</td>
+                  <td><%= b.remaining %> в‚Ѕ</td>
                   <td><%= new Date(b.expires_at).toLocaleDateString('ru-RU') %></td>
-                  <td><%= b.expired ? 'Сгорели' : (b.remaining > 0 ? 'Активны' : 'Использованы') %></td>
+                  <td><%= b.expired ? 'РЎРіРѕСЂРµР»Рё' : (b.remaining > 0 ? 'РђРєС‚РёРІРЅС‹' : 'РСЃРїРѕР»СЊР·РѕРІР°РЅС‹') %></td>
                 </tr>
               <% }) %>
             </tbody>
@@ -104,37 +104,37 @@
     </div>
 
     <div id="orders-active" class="dashboard-block reveal">
-      <h2>Мои заказы</h2>
+      <h2>РњРѕРё Р·Р°РєР°Р·С‹</h2>
       <% if (activeOrders.length === 0 && pastOrders.length === 0) { %>
-        <p class="empty-state">Нет заказов. <a href="/#gallery">Выбрать модель</a></p>
+        <p class="empty-state">РќРµС‚ Р·Р°РєР°Р·РѕРІ. <a href="/#gallery">Р’С‹Р±СЂР°С‚СЊ РјРѕРґРµР»СЊ</a></p>
       <% } %>
 
       <% if (activeOrders.length > 0) { %>
-        <h3 class="subsection-title">Текущие</h3>
+        <h3 class="subsection-title">РўРµРєСѓС‰РёРµ</h3>
         <div class="order-cards">
           <% activeOrders.forEach(o => { %>
             <article class="order-card order-card-full">
               <div class="order-card-head">
-                <span class="order-id">№<%= o.id %></span>
+                <span class="order-id">в„–<%= o.id %></span>
                 <span class="order-status"><%= o.progressInfo.label %></span>
               </div>
               <h3><%= o.product_title %></h3>
-              <p class="order-meta"><%= o.amount.toLocaleString('ru-RU') %> ₽ · оформлен <%= new Date(o.created_at).toLocaleDateString('ru-RU') %></p>
+              <p class="order-meta"><%= o.amount.toLocaleString('ru-RU') %> в‚Ѕ В· РѕС„РѕСЂРјР»РµРЅ <%= new Date(o.created_at).toLocaleDateString('ru-RU') %></p>
               <p class="order-stage-desc"><%= o.progressInfo.desc %></p>
               <% if (o.estimated_date) { %>
-                <p class="order-deadline"><strong>Ориентировочный срок:</strong> <%= new Date(o.estimated_date).toLocaleDateString('ru-RU') %></p>
+                <p class="order-deadline"><strong>РћСЂРёРµРЅС‚РёСЂРѕРІРѕС‡РЅС‹Р№ СЃСЂРѕРє:</strong> <%= new Date(o.estimated_date).toLocaleDateString('ru-RU') %></p>
               <% } %>
               <% if (o.stage_note) { %>
-                <p class="order-admin-note"><strong>Комментарий ателье:</strong> <%= o.stage_note %></p>
+                <p class="order-admin-note"><strong>РљРѕРјРјРµРЅС‚Р°СЂРёР№ Р°С‚РµР»СЊРµ:</strong> <%= o.stage_note %></p>
               <% } %>
               <% if (o.progressPhotos && o.progressPhotos.length > 0) { %>
                 <div class="progress-photos">
-                  <p class="subsection-title-sm">Фото этапов пошива</p>
+                  <p class="subsection-title-sm">Р¤РѕС‚Рѕ СЌС‚Р°РїРѕРІ РїРѕС€РёРІР°</p>
                   <div class="progress-photos-grid">
                     <% o.progressPhotos.forEach(p => { %>
                       <figure class="progress-photo-item">
                         <a href="<%= p.image_path %>" target="_blank" rel="noopener">
-                          <img src="<%= p.image_path %>" alt="<%= p.caption || 'Этап пошива' %>" loading="lazy">
+                          <img src="<%= p.image_path %>" alt="<%= p.caption || 'Р­С‚Р°Рї РїРѕС€РёРІР°' %>" loading="lazy">
                         </a>
                         <% if (p.caption) { %><figcaption><%= p.caption %></figcaption><% } %>
                       </figure>
@@ -146,8 +146,8 @@
                 <div class="progress-bar" style="width: <%= o.progressInfo.progress %>%"></div>
               </div>
               <div class="progress-steps progress-steps--icons">
-                <% const stepIcons = ['✓', '✂', '◉', '◇', '★']; %>
-                <% const stepLabels = ['Принят', 'Пошив', 'Примерка', 'Финал', 'Готово']; %>
+                <% const stepIcons = ['вњ“', 'вњ‚', 'в—‰', 'в—‡', 'в…']; %>
+                <% const stepLabels = ['РџСЂРёРЅСЏС‚', 'РџРѕС€РёРІ', 'РџСЂРёРјРµСЂРєР°', 'Р¤РёРЅР°Р»', 'Р“РѕС‚РѕРІРѕ']; %>
                 <% stepLabels.forEach((step, i) => { %>
                   <span class="progress-step<%= i <= o.progressInfo.step ? ' done' : '' %>">
                     <span class="step-icon" aria-hidden="true"><%= stepIcons[i] %></span>
@@ -158,41 +158,41 @@
 
               <div class="order-actions">
                 <details class="order-action-block">
-                  <summary>Запросить фото / видео отчёт</summary>
+                  <summary>Р—Р°РїСЂРѕСЃРёС‚СЊ С„РѕС‚Рѕ / РІРёРґРµРѕ РѕС‚С‡С‘С‚</summary>
                   <form method="POST" action="/account/orders/<%= o.id %>/media-request" class="form form-luxury">
                     <div class="form-group">
-                      <textarea name="media_request" rows="2" placeholder="Что хотите увидеть на фото или видео?" required><%= o.media_request || '' %></textarea>
+                      <textarea name="media_request" rows="2" placeholder="Р§С‚Рѕ С…РѕС‚РёС‚Рµ СѓРІРёРґРµС‚СЊ РЅР° С„РѕС‚Рѕ РёР»Рё РІРёРґРµРѕ?" required><%= o.media_request || '' %></textarea>
                     </div>
                     <% if (o.media_request_status) { %>
-                      <p class="hint">Статус: <%= o.media_request_status === 'pending' ? 'Ожидает ответа' : o.media_request_status %></p>
+                      <p class="hint">РЎС‚Р°С‚СѓСЃ: <%= o.media_request_status === 'pending' ? 'РћР¶РёРґР°РµС‚ РѕС‚РІРµС‚Р°' : o.media_request_status %></p>
                     <% } %>
-                    <button type="submit" class="btn btn-outline btn-sm">Отправить запрос</button>
+                    <button type="submit" class="btn btn-outline btn-sm">РћС‚РїСЂР°РІРёС‚СЊ Р·Р°РїСЂРѕСЃ</button>
                   </form>
                 </details>
 
                 <details class="order-action-block">
-                  <summary>Внести изменения в заказ</summary>
+                  <summary>Р’РЅРµСЃС‚Рё РёР·РјРµРЅРµРЅРёСЏ РІ Р·Р°РєР°Р·</summary>
                   <div class="warning-box">
-                    При изменении заказа возможна дополнительная оплата — по договорённости с ателье.
+                    РџСЂРё РёР·РјРµРЅРµРЅРёРё Р·Р°РєР°Р·Р° РІРѕР·РјРѕР¶РЅР° РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РѕРїР»Р°С‚Р° вЂ” РїРѕ РґРѕРіРѕРІРѕСЂС‘РЅРЅРѕСЃС‚Рё СЃ Р°С‚РµР»СЊРµ.
                   </div>
                   <form method="POST" action="/account/orders/<%= o.id %>/change-request" class="form form-luxury">
                     <div class="form-group">
-                      <textarea name="change_request" rows="3" placeholder="Опишите желаемые изменения" required><%= o.change_request || '' %></textarea>
+                      <textarea name="change_request" rows="3" placeholder="РћРїРёС€РёС‚Рµ Р¶РµР»Р°РµРјС‹Рµ РёР·РјРµРЅРµРЅРёСЏ" required><%= o.change_request || '' %></textarea>
                     </div>
                     <label class="checkbox-inline">
                       <input type="checkbox" name="confirm_extra" required>
-                      Понимаю, что возможна доплата
+                      РџРѕРЅРёРјР°СЋ, С‡С‚Рѕ РІРѕР·РјРѕР¶РЅР° РґРѕРїР»Р°С‚Р°
                     </label>
                     <% if (o.change_request_status) { %>
-                      <p class="hint">Статус: <%= o.change_request_status === 'pending' ? 'На рассмотрении' : o.change_request_status %></p>
+                      <p class="hint">РЎС‚Р°С‚СѓСЃ: <%= o.change_request_status === 'pending' ? 'РќР° СЂР°СЃСЃРјРѕС‚СЂРµРЅРёРё' : o.change_request_status %></p>
                     <% } %>
-                    <button type="submit" class="btn btn-outline btn-sm">Отправить</button>
+                    <button type="submit" class="btn btn-outline btn-sm">РћС‚РїСЂР°РІРёС‚СЊ</button>
                   </form>
                 </details>
 
                 <% if (o.canCancel) { %>
-                  <form method="POST" action="/account/orders/<%= o.id %>/cancel" class="cancel-form" onsubmit="return confirm('Отменить заказ №<%= o.id %>?')">
-                    <button type="submit" class="btn btn-ghost btn-sm btn-cancel">Отменить заказ</button>
+                  <form method="POST" action="/account/orders/<%= o.id %>/cancel" class="cancel-form" onsubmit="return confirm('РћС‚РјРµРЅРёС‚СЊ Р·Р°РєР°Р· в„–<%= o.id %>?')">
+                    <button type="submit" class="btn btn-ghost btn-sm btn-cancel">РћС‚РјРµРЅРёС‚СЊ Р·Р°РєР°Р·</button>
                   </form>
                 <% } %>
               </div>
@@ -202,16 +202,16 @@
       <% } %>
 
       <% if (pastOrders.length > 0) { %>
-        <h3 class="subsection-title mt-md">История</h3>
+        <h3 class="subsection-title mt-md">РСЃС‚РѕСЂРёСЏ</h3>
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>№</th><th>Товар</th><th>Сумма</th><th>Статус</th><th>Дата</th></tr></thead>
+            <thead><tr><th>в„–</th><th>РўРѕРІР°СЂ</th><th>РЎСѓРјРјР°</th><th>РЎС‚Р°С‚СѓСЃ</th><th>Р”Р°С‚Р°</th></tr></thead>
             <tbody>
               <% pastOrders.forEach(o => { %>
                 <tr>
                   <td><%= o.id %></td>
                   <td><%= o.product_title %></td>
-                  <td><%= o.amount.toLocaleString('ru-RU') %> ₽</td>
+                  <td><%= o.amount.toLocaleString('ru-RU') %> в‚Ѕ</td>
                   <td><span class="status status-<%= o.status %>"><%= o.progressInfo.label %></span></td>
                   <td><%= new Date(o.created_at).toLocaleDateString('ru-RU') %></td>
                 </tr>
@@ -223,20 +223,20 @@
     </div>
 
     <div id="rentals" class="dashboard-block reveal">
-      <h2>История аренды</h2>
+      <h2>РСЃС‚РѕСЂРёСЏ Р°СЂРµРЅРґС‹</h2>
       <% if (!rentals || rentals.length === 0) { %>
-        <p class="empty-state">Нет заявок на аренду. <a href="/#rental">Посмотреть каталог</a></p>
+        <p class="empty-state">РќРµС‚ Р·Р°СЏРІРѕРє РЅР° Р°СЂРµРЅРґСѓ. <a href="/#rental">РџРѕСЃРјРѕС‚СЂРµС‚СЊ РєР°С‚Р°Р»РѕРі</a></p>
       <% } else { %>
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>№</th><th>Вещь</th><th>Период</th><th>Сумма</th><th>Статус</th></tr></thead>
+            <thead><tr><th>в„–</th><th>Р’РµС‰СЊ</th><th>РџРµСЂРёРѕРґ</th><th>РЎСѓРјРјР°</th><th>РЎС‚Р°С‚СѓСЃ</th></tr></thead>
             <tbody>
               <% rentals.forEach(r => { %>
                 <tr>
                   <td><%= r.id %></td>
                   <td><%= r.item_title %></td>
-                  <td><%= r.rent_from %> — <%= r.rent_to %></td>
-                  <td><%= r.amount ? r.amount.toLocaleString('ru-RU') + ' ₽' : '—' %></td>
+                  <td><%= r.rent_from %> вЂ” <%= r.rent_to %></td>
+                  <td><%= r.amount ? r.amount.toLocaleString('ru-RU') + ' в‚Ѕ' : 'вЂ”' %></td>
                   <td><span class="status status-<%= r.status %>"><%= r.status %></span></td>
                 </tr>
               <% }) %>
@@ -247,45 +247,45 @@
     </div>
 
     <div id="measurements" class="dashboard-block reveal">
-      <h2>Мои мерки</h2>
-      <p class="block-desc">Параметры в сантиметрах для индивидуального пошива.</p>
+      <h2>РњРѕРё РјРµСЂРєРё</h2>
+      <p class="block-desc">РџР°СЂР°РјРµС‚СЂС‹ РІ СЃР°РЅС‚РёРјРµС‚СЂР°С… РґР»СЏ РёРЅРґРёРІРёРґСѓР°Р»СЊРЅРѕРіРѕ РїРѕС€РёРІР°.</p>
       <form method="POST" action="/account/measurements" class="form form-luxury measurements-form">
         <div class="measurements-grid">
           <% const m = measurements || {}; %>
           <% const fields = [
-            ['chest', 'Обхват груди'], ['waist', 'Талия'], ['hips', 'Бёдра'],
-            ['sleeve', 'Длина рукава'], ['shoulder', 'Плечи'], ['height', 'Рост'], ['neck', 'Шея']
+            ['chest', 'РћР±С…РІР°С‚ РіСЂСѓРґРё'], ['waist', 'РўР°Р»РёСЏ'], ['hips', 'Р‘С‘РґСЂР°'],
+            ['sleeve', 'Р”Р»РёРЅР° СЂСѓРєР°РІР°'], ['shoulder', 'РџР»РµС‡Рё'], ['height', 'Р РѕСЃС‚'], ['neck', 'РЁРµСЏ']
           ]; %>
           <% fields.forEach(([key, label]) => { %>
             <div class="form-group">
               <label for="m-<%= key %>"><%= label %></label>
               <input type="number" id="m-<%= key %>" name="<%= key %>" step="0.5" min="0"
-                value="<%= m[key] != null ? m[key] : '' %>" placeholder="см">
+                value="<%= m[key] != null ? m[key] : '' %>" placeholder="СЃРј">
             </div>
           <% }) %>
         </div>
         <div class="form-group">
-          <label for="m-notes">Примечания</label>
+          <label for="m-notes">РџСЂРёРјРµС‡Р°РЅРёСЏ</label>
           <textarea id="m-notes" name="notes" rows="2"><%= m.notes || '' %></textarea>
         </div>
-        <button type="submit" class="btn btn-luxury">Сохранить мерки</button>
+        <button type="submit" class="btn btn-luxury">РЎРѕС…СЂР°РЅРёС‚СЊ РјРµСЂРєРё</button>
       </form>
     </div>
 
     <div id="fitting" class="dashboard-block reveal">
-      <h2>Запись на примерку</h2>
+      <h2>Р—Р°РїРёСЃСЊ РЅР° РїСЂРёРјРµСЂРєСѓ</h2>
       <div class="fitting-layout">
         <div class="calendar-widget" id="fitting-calendar" data-booked='<%- JSON.stringify(bookedSlots) %>'></div>
         <form method="POST" action="/account/fitting" class="form form-luxury fitting-form" id="fitting-form">
           <input type="hidden" name="appointment_date" id="fitting-date">
           <input type="hidden" name="appointment_time" id="fitting-time">
-          <p class="fitting-selected" id="fitting-selected">Выберите дату и время</p>
+          <p class="fitting-selected" id="fitting-selected">Р’С‹Р±РµСЂРёС‚Рµ РґР°С‚Сѓ Рё РІСЂРµРјСЏ</p>
           <div class="time-slots" id="time-slots"></div>
           <div class="form-group">
-            <label for="fitting-notes">Комментарий</label>
+            <label for="fitting-notes">РљРѕРјРјРµРЅС‚Р°СЂРёР№</label>
             <textarea id="fitting-notes" name="notes" rows="2"></textarea>
           </div>
-          <button type="submit" class="btn btn-luxury" id="fitting-submit" disabled>Записаться</button>
+          <button type="submit" class="btn btn-luxury" id="fitting-submit" disabled>Р—Р°РїРёСЃР°С‚СЊСЃСЏ</button>
         </form>
       </div>
       <% if (fittings.length > 0) { %>
@@ -294,7 +294,7 @@
             <div class="fitting-item">
               <span><%= new Date(f.appointment_date).toLocaleDateString('ru-RU') %></span>
               <span><%= f.appointment_time %></span>
-              <span class="status status-<%= f.status %>"><%= f.status === 'pending' ? 'Ожидает' : f.status %></span>
+              <span class="status status-<%= f.status %>"><%= f.status === 'pending' ? 'РћР¶РёРґР°РµС‚' : f.status %></span>
             </div>
           <% }) %>
         </div>
@@ -304,3 +304,4 @@
 </section>
 
 <%- include('partials/footer') %>
+
