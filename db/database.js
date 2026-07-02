@@ -18,6 +18,8 @@ function saveDb() {
 }
 
 function addColumnIfNotExists(db, table, column, definition) {
+  const exists = db.exec(`SELECT name FROM sqlite_master WHERE type='table' AND name='${table}'`);
+  if (!exists[0]?.values?.length) return;
   const info = db.exec(`PRAGMA table_info(${table})`);
   const cols = info[0]?.values?.map(row => row[1]) || [];
   if (!cols.includes(column)) {
@@ -178,24 +180,6 @@ function runMigrations(db) {
   addColumnIfNotExists(db, 'gallery', 'rent_price_week', 'REAL DEFAULT 0');
   addColumnIfNotExists(db, 'gallery', 'category', "TEXT DEFAULT 'collection'");
 
-  addColumnIfNotExists(db, 'rental_bookings', 'dress_value', 'REAL DEFAULT 0');
-  addColumnIfNotExists(db, 'rental_bookings', 'deposit_amount', 'REAL DEFAULT 0');
-  addColumnIfNotExists(db, 'rental_bookings', 'rent_days', 'INTEGER DEFAULT 0');
-  addColumnIfNotExists(db, 'rental_bookings', 'rent_weeks', 'INTEGER DEFAULT 0');
-  addColumnIfNotExists(db, 'rental_bookings', 'rent_breakdown', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'passport', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'tenant_address', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'tenant_inn', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'rental_purpose', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'payment_method', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'contract_file', 'TEXT');
-  addColumnIfNotExists(db, 'rental_bookings', 'terms_accepted', 'INTEGER DEFAULT 0');
-
-  db.run('UPDATE gallery SET sort_order = id WHERE sort_order IS NULL OR sort_order = 0');
-  db.run('UPDATE gallery SET for_order = 1 WHERE for_order IS NULL');
-  db.run('UPDATE gallery SET for_rent = 0 WHERE for_rent IS NULL');
-  db.run(`UPDATE gallery SET category = 'collection' WHERE category IS NULL OR category = ''`);
-
   db.run(`
     CREATE TABLE IF NOT EXISTS rental_bookings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -214,6 +198,24 @@ function runMigrations(db) {
       created_at TEXT DEFAULT (datetime('now','localtime'))
     )
   `);
+
+  addColumnIfNotExists(db, 'rental_bookings', 'dress_value', 'REAL DEFAULT 0');
+  addColumnIfNotExists(db, 'rental_bookings', 'deposit_amount', 'REAL DEFAULT 0');
+  addColumnIfNotExists(db, 'rental_bookings', 'rent_days', 'INTEGER DEFAULT 0');
+  addColumnIfNotExists(db, 'rental_bookings', 'rent_weeks', 'INTEGER DEFAULT 0');
+  addColumnIfNotExists(db, 'rental_bookings', 'rent_breakdown', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'passport', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'tenant_address', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'tenant_inn', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'rental_purpose', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'payment_method', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'contract_file', 'TEXT');
+  addColumnIfNotExists(db, 'rental_bookings', 'terms_accepted', 'INTEGER DEFAULT 0');
+
+  db.run('UPDATE gallery SET sort_order = id WHERE sort_order IS NULL OR sort_order = 0');
+  db.run('UPDATE gallery SET for_order = 1 WHERE for_order IS NULL');
+  db.run('UPDATE gallery SET for_rent = 0 WHERE for_rent IS NULL');
+  db.run(`UPDATE gallery SET category = 'collection' WHERE category IS NULL OR category = ''`);
 
   db.run(`
     CREATE TABLE IF NOT EXISTS order_progress_photos (
