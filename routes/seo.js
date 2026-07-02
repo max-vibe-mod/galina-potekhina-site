@@ -52,37 +52,50 @@ Sitemap: ${base}/sitemap.xml
 });
 
 router.get('/sitemap.xml', (req, res) => {
-  const base = getSiteUrl(req);
-  const today = todayIso();
-  const gallery = db.prepare(`
-    SELECT id, for_order, for_rent, created_at FROM gallery WHERE active = 1 ORDER BY sort_order ASC, id ASC
-  `).all();
+  try {
+    const base = getSiteUrl(req);
+    const today = todayIso();
+    const gallery = db.prepare(`
+      SELECT id, for_order, for_rent, created_at FROM gallery WHERE active = 1 ORDER BY sort_order ASC, id ASC
+    `).all();
 
-  const urls = [
-    { loc: '/', priority: '1.0', changefreq: 'weekly', lastmod: today }
-  ];
+    const urls = [
+      { loc: '/', priority: '1.0', changefreq: 'weekly', lastmod: today }
+    ];
 
-  for (const item of gallery) {
-    const lastmod = item.created_at ? String(item.created_at).slice(0, 10) : today;
-    if (item.for_order) {
-      urls.push({ loc: `/order/${item.id}`, priority: '0.8', changefreq: 'weekly', lastmod });
+    for (const item of gallery) {
+      const lastmod = item.created_at ? String(item.created_at).slice(0, 10) : today;
+      if (item.for_order) {
+        urls.push({ loc: `/order/${item.id}`, priority: '0.8', changefreq: 'weekly', lastmod });
+      }
+      if (item.for_rent) {
+        urls.push({ loc: `/rent/${item.id}`, priority: '0.75', changefreq: 'weekly', lastmod });
+      }
     }
-    if (item.for_rent) {
-      urls.push({ loc: `/rent/${item.id}`, priority: '0.75', changefreq: 'weekly', lastmod });
-    }
-  }
 
-  const body = urls.map((u) => `  <url>
+    const body = urls.map((u) => `  <url>
     <loc>${base}${u.loc}</loc>
     <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
   </url>`).join('\n');
 
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+    res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${body}
 </urlset>`);
+  } catch (err) {
+    console.error('sitemap.xml error:', err);
+    const base = getSiteUrl(req);
+    res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${base}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`);
+  }
 });
 
 module.exports = router;

@@ -362,6 +362,17 @@
 
       <div class="contact-card contact-card--soft">
 
+        <h3>Студия во Владивостоке</h3>
+        <p class="contact-address" itemscope itemtype="https://schema.org/PostalAddress">
+          <span itemprop="name">Студия пошива Galina Potekhina</span><br>
+          <span itemprop="addressLocality">г. Владивосток</span>,
+          <span itemprop="addressRegion"> Приморский край</span>,
+          <span itemprop="addressCountry"> Россия</span>
+          <% if (settings.landlord_address && settings.landlord_address !== 'г. Владивосток') { %>
+            <br><span itemprop="streetAddress"><%= settings.landlord_address %></span>
+          <% } %>
+        </p>
+
         <h3>Телефон</h3>
 
         <% if (settings.phone) { %>
