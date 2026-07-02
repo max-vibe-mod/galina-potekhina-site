@@ -1,4 +1,4 @@
-const CACHE = 'gp-admin-v1';
+const CACHE = 'gp-admin-v2';
 const ASSETS = [
   '/admin/index.html',
   '/admin/manifest.json',

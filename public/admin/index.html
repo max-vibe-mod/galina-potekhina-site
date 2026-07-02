@@ -13,89 +13,125 @@
   <link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body>
-  <header class="app-header">
-    <img src="/logo.png" alt="" width="40" height="40">
-    <div>
+  <!-- Экран входа -->
+  <section id="screen-login" class="screen screen--active">
+    <div class="login-wrap">
+      <img src="/logo.png" alt="" class="login-logo" width="88" height="88">
       <h1>GP Админ</h1>
-      <p>Управление сайтом</p>
+      <p class="login-sub">Пульт управления сайтом студии</p>
+      <label for="mobile-key">Ключ доступа</label>
+      <input type="password" id="mobile-key" autocomplete="off" placeholder="Вставьте ключ">
+      <button type="button" class="btn btn-gold" id="btn-login">Войти</button>
+      <div id="login-status" class="status"></div>
+      <p class="hint login-hint">Ключ выдаётся один раз — сохраните его. GitHub-токен не нужен.</p>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <div id="install-banner" class="install-banner" hidden>
-      <strong>Установить как приложение</strong>
-      <p id="install-hint">Добавьте на главный экран для быстрого доступа.</p>
-      <button type="button" class="btn btn-gold" id="btn-install" hidden>Установить</button>
-    </div>
+  <!-- Основное приложение -->
+  <div id="screen-app" class="screen" hidden>
+    <header class="app-header">
+      <img src="/logo.png" alt="" width="40" height="40">
+      <div class="app-header-text">
+        <h1>GP Админ</h1>
+        <p id="header-sub">Загрузка…</p>
+      </div>
+      <span id="badge-total" class="badge" hidden>0</span>
+    </header>
 
-    <!-- Подключение -->
-    <section id="panel-connect" class="panel is-active">
-      <div class="card">
-        <h2>GitHub Token</h2>
-        <p class="hint">Нужен Personal Access Token с правом <code>repo</code>. Хранится только на вашем телефоне.</p>
-        <label for="gh-token">PAT (ghp_…)</label>
-        <div class="token-row">
-          <input type="password" id="gh-token" autocomplete="off" placeholder="Вставьте токен">
-          <button type="button" class="token-toggle" id="token-toggle" aria-label="Показать">👁</button>
+    <main>
+      <div id="install-banner" class="install-banner" hidden>
+        <strong>Установить на главный экран</strong>
+        <p id="install-hint">Быстрый доступ как у обычного приложения.</p>
+        <button type="button" class="btn btn-gold" id="btn-install" hidden>Установить</button>
+      </div>
+
+      <!-- Уведомления -->
+      <section id="panel-inbox" class="panel is-active">
+        <div class="card">
+          <h2>Новые заявки</h2>
+          <div class="stat-row">
+            <div class="stat"><span id="stat-orders">0</span><small>Заказы</small></div>
+            <div class="stat"><span id="stat-rentals">0</span><small>Аренда</small></div>
+            <div class="stat"><span id="stat-media">0</span><small>Запросы</small></div>
+          </div>
+          <button type="button" class="btn btn-ghost" id="btn-enable-push">🔔 Включить уведомления</button>
         </div>
-        <label for="gh-repo">Репозиторий</label>
-        <input type="text" id="gh-repo" value="max-vibe-mod/galina-potekhina-site" readonly>
-        <button type="button" class="btn btn-gold" id="btn-save-token">Сохранить и проверить</button>
-        <div id="connect-status" class="status"></div>
-      </div>
-      <div class="card">
-        <h2>Как это работает</h2>
-        <p class="hint">Фото и тексты уходят в GitHub → Render пересобирает сайт (2–5 мин). Договоры аренды не затрагиваются.</p>
-      </div>
-    </section>
+        <div id="inbox-list" class="inbox-list"></div>
+      </section>
 
-    <!-- Коллекция -->
-    <section id="panel-gallery" class="panel">
-      <div class="card">
-        <h2>Текущая коллекция</h2>
-        <button type="button" class="btn btn-ghost" id="btn-refresh-gallery">Обновить список</button>
-        <div id="gallery-grid" class="gallery-grid" style="margin-top:12px"></div>
-      </div>
-      <div class="card">
-        <h2>Новое платье</h2>
-        <label class="file-pick" id="file-pick">
-          <input type="file" id="photo-input" accept="image/*" capture="environment">
-          <span id="file-pick-label">📷 Нажмите — выбрать фото</span>
+      <!-- Коллекция -->
+      <section id="panel-gallery" class="panel">
+        <div class="card">
+          <h2>Коллекция</h2>
+          <button type="button" class="btn btn-gold" id="btn-new-dress">+ Новое платье</button>
+        </div>
+        <div id="gallery-list" class="dress-list"></div>
+      </section>
+
+      <!-- Тексты -->
+      <section id="panel-texts" class="panel">
+        <div class="card">
+          <h2>Тексты и контакты</h2>
+          <p class="hint">Изменения сразу на сайте — без ожидания деплоя.</p>
+          <label for="set-phone">Телефон</label>
+          <input type="tel" id="set-phone">
+          <label for="set-hero-title">Заголовок</label>
+          <input type="text" id="set-hero-title">
+          <label for="set-hero-sub">Подзаголовок</label>
+          <input type="text" id="set-hero-sub">
+          <label for="set-rental-title">Аренда — заголовок</label>
+          <input type="text" id="set-rental-title">
+          <label for="set-rental-text">Аренда — текст</label>
+          <textarea id="set-rental-text"></textarea>
+          <button type="button" class="btn btn-gold" id="btn-save-texts">Сохранить</button>
+          <div id="texts-status" class="status"></div>
+        </div>
+        <div class="card">
+          <h2>Telegram-уведомления</h2>
+          <p class="hint" id="telegram-hint">Приходят на телефон даже когда приложение закрыто.</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button type="button" data-panel="inbox" class="is-active"><span class="ico">🔔</span>Заявки<span class="nav-badge" id="nav-badge" hidden></span></button>
+      <button type="button" data-panel="gallery"><span class="ico">👗</span>Коллекция</button>
+      <button type="button" data-panel="texts"><span class="ico">✏️</span>Тексты</button>
+      <button type="button" id="btn-logout"><span class="ico">⎋</span>Выход</button>
+    </nav>
+  </div>
+
+  <!-- Редактор платья -->
+  <dialog id="dress-dialog" class="dress-dialog">
+    <form id="dress-form" method="dialog">
+      <header class="dialog-header">
+        <h2 id="dress-form-title">Платье</h2>
+        <button type="button" class="dialog-close" id="dress-close" aria-label="Закрыть">×</button>
+      </header>
+      <div class="dialog-body">
+        <input type="hidden" id="dress-id">
+        <img id="dress-img" class="dress-img" alt="" hidden>
+        <label class="file-pick" id="dress-file-pick">
+          <input type="file" id="dress-photo" accept="image/*">
+          <span id="dress-file-label">📷 Сменить фото</span>
         </label>
-        <img id="photo-preview" class="preview-img" alt="" hidden>
         <label for="dress-title">Название</label>
-        <input type="text" id="dress-title" placeholder="Например: Лунный блеск">
+        <input type="text" id="dress-title" required>
         <label for="dress-desc">Описание</label>
-        <textarea id="dress-desc" placeholder="Краткое описание платья"></textarea>
+        <textarea id="dress-desc"></textarea>
         <label for="dress-price">Цена покупки (₽)</label>
-        <input type="number" id="dress-price" min="0" step="1000" placeholder="98000">
-        <button type="button" class="btn btn-gold" id="btn-upload-dress">Загрузить в GitHub</button>
-        <div id="upload-status" class="status"></div>
+        <input type="number" id="dress-price" min="0" step="1000">
+        <label class="check-row"><input type="checkbox" id="dress-active" checked> Показывать на сайте</label>
+        <label class="check-row"><input type="checkbox" id="dress-rent" checked> Аренда</label>
+        <label class="check-row"><input type="checkbox" id="dress-buy" checked> Покупка</label>
+        <div id="dress-status" class="status"></div>
       </div>
-    </section>
-
-    <!-- Тексты -->
-    <section id="panel-texts" class="panel">
-      <div class="card">
-        <h2>Тексты на сайте</h2>
-        <p class="hint">Изменения сохраняются в <code>gallery-catalog.json</code> и применяются после деплоя Render.</p>
-        <label for="set-phone">Телефон</label>
-        <input type="tel" id="set-phone" placeholder="79025553805">
-        <label for="set-hero-title">Заголовок</label>
-        <input type="text" id="set-hero-title" placeholder="Галина Потехина">
-        <label for="set-hero-sub">Подзаголовок</label>
-        <input type="text" id="set-hero-sub" placeholder="Студия пошива…">
-        <button type="button" class="btn btn-gold" id="btn-save-texts">Сохранить тексты в GitHub</button>
-        <div id="texts-status" class="status"></div>
-      </div>
-    </section>
-  </main>
-
-  <nav class="bottom-nav" aria-label="Разделы">
-    <button type="button" data-panel="connect" class="is-active"><span class="ico">🔑</span>Токен</button>
-    <button type="button" data-panel="gallery"><span class="ico">👗</span>Коллекция</button>
-    <button type="button" data-panel="texts"><span class="ico">✏️</span>Тексты</button>
-  </nav>
+      <footer class="dialog-footer">
+        <button type="button" class="btn btn-danger" id="dress-delete" hidden>Удалить</button>
+        <button type="submit" class="btn btn-gold">Сохранить</button>
+      </footer>
+    </form>
+  </dialog>
 
   <script src="/admin/app.js" defer></script>
 </body>

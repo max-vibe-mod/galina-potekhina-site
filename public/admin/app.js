@@ -1,211 +1,37 @@
 (function () {
   'use strict';
 
-  const STORAGE_TOKEN = 'gp_admin_gh_token';
-  const STORAGE_REPO = 'gp_admin_gh_repo';
-  const BRANCH = 'main';
-  const CATALOG_PATH = 'public/data/gallery-catalog.json';
-  const UPLOAD_DIR = 'public/uploads/evening';
+  const STORAGE_KEY = 'gp_mobile_key';
+  const POLL_MS = 25000;
 
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => document.querySelectorAll(sel);
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
 
-  let deferredInstall = null;
+  let state = {
+    gallery: [],
+    counts: { ordersNew: 0, rentalsNew: 0, mediaPending: 0 },
+    lastPoll: null,
+    lastNotifyTotal: 0,
+    pollTimer: null,
+    deferredInstall: null
+  };
+
+  function getKey() {
+    return localStorage.getItem(STORAGE_KEY) || '';
+  }
+
+  function setKey(v) {
+    localStorage.setItem(STORAGE_KEY, v);
+  }
+
+  function clearKey() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 
   function showStatus(el, text, type) {
     if (!el) return;
     el.textContent = text;
     el.className = 'status is-show ' + (type || 'info');
-  }
-
-  function getToken() {
-    return localStorage.getItem(STORAGE_TOKEN) || '';
-  }
-
-  function getRepo() {
-    return localStorage.getItem(STORAGE_REPO) || 'max-vibe-mod/galina-potekhina-site';
-  }
-
-  function b64FromBytes(bytes) {
-    let binary = '';
-    const chunk = 0x8000;
-    for (let i = 0; i < bytes.length; i += chunk) {
-      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
-    }
-    return btoa(binary);
-  }
-
-  function b64ToUtf8(b64) {
-    const bin = atob(b64.replace(/\n/g, ''));
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return new TextDecoder().decode(bytes);
-  }
-
-  function utf8ToB64(str) {
-    const bytes = new TextEncoder().encode(str);
-    return b64FromBytes(bytes);
-  }
-
-  async function ghFetch(path, options) {
-    const token = getToken();
-    if (!token) throw new Error('Сначала сохраните GitHub Token');
-
-    const repo = getRepo();
-    const url = path.startsWith('http')
-      ? path
-      : `https://api.github.com/repos/${repo}/contents/${path}?ref=${BRANCH}`;
-
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${token}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-        ...(options.headers || {})
-      }
-    });
-
-    if (res.status === 404) return null;
-
-    const text = await res.text();
-    if (!res.ok) {
-      let msg = text;
-      try {
-        const j = JSON.parse(text);
-        msg = j.message || text;
-      } catch (_) { /* ignore */ }
-      throw new Error(msg);
-    }
-
-    if (!text) return {};
-    try {
-      return JSON.parse(text);
-    } catch (_) {
-      return text;
-    }
-  }
-
-  async function ghGetFile(path) {
-    return ghFetch(path);
-  }
-
-  async function ghPutFile(path, base64Content, message, sha) {
-    const body = {
-      message,
-      content: base64Content,
-      branch: BRANCH
-    };
-    if (sha) body.sha = sha;
-
-    return ghFetch(path, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-  }
-
-  async function loadCatalogFromGithub() {
-    const remote = await ghGetFile(CATALOG_PATH);
-    if (!remote) return { version: 1, settings: {}, items: [] };
-    return JSON.parse(b64ToUtf8(remote.content));
-  }
-
-  async function loadCatalog() {
-    const live = await fetch('/data/gallery-catalog.json?_=' + Date.now());
-    if (live.ok) return live.json();
-
-    const remote = await ghGetFile(CATALOG_PATH);
-    if (!remote) return { version: 1, settings: {}, items: [] };
-    return JSON.parse(b64ToUtf8(remote.content));
-  }
-
-  async function saveCatalog(catalog, message) {
-    const remote = await ghGetFile(CATALOG_PATH);
-    const sha = remote && remote.sha;
-    const json = JSON.stringify(catalog, null, 2) + '\n';
-    await ghPutFile(CATALOG_PATH, utf8ToB64(json), message, sha);
-  }
-
-  function makeFileKey(title) {
-    const slug = (title || 'dress')
-      .toLowerCase()
-      .replace(/[^a-z0-9а-яё]+/gi, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 24);
-    return (slug || 'dress') + '-' + Date.now().toString(36);
-  }
-
-  function compressImage(file, maxSide, quality) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        let w = img.width;
-        let h = img.height;
-        if (w > maxSide || h > maxSide) {
-          if (w > h) {
-            h = Math.round((h * maxSide) / w);
-            w = maxSide;
-          } else {
-            w = Math.round((w * maxSide) / h);
-            h = maxSide;
-          }
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) return reject(new Error('Не удалось сжать фото'));
-            resolve(blob);
-          },
-          'image/jpeg',
-          quality
-        );
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('Не удалось прочитать фото'));
-      };
-      img.src = url;
-    });
-  }
-
-  async function blobToBase64(blob) {
-    const buf = await blob.arrayBuffer();
-    return b64FromBytes(new Uint8Array(buf));
-  }
-
-  function renderGallery(catalog) {
-    const grid = $('#gallery-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    const items = (catalog.items || []).filter((i) => i.active !== false);
-    if (!items.length) {
-      grid.innerHTML = '<p class="hint">Коллекция пуста</p>';
-      return;
-    }
-
-    items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-
-    for (const item of items) {
-      const ext = item.ext || '.png';
-      const src = `/uploads/evening/${item.fileKey}${ext}`;
-      const el = document.createElement('article');
-      el.className = 'gallery-item';
-      el.innerHTML = `
-        <img src="${src}" alt="" loading="lazy" onerror="this.style.opacity=0.3">
-        <div class="meta">
-          <strong>${escapeHtml(item.title)}</strong>
-          <span>${formatPrice(item.price)}</span>
-        </div>`;
-      grid.appendChild(el);
-    }
   }
 
   function escapeHtml(s) {
@@ -216,147 +42,385 @@
       .replace(/"/g, '&quot;');
   }
 
-  function formatPrice(n) {
-    const v = Number(n) || 0;
-    return v.toLocaleString('ru-RU') + ' ₽';
+  function formatMoney(n) {
+    return (Number(n) || 0).toLocaleString('ru-RU') + ' ₽';
   }
 
-  function fillSettingsForm(catalog) {
-    const s = catalog.settings || {};
-    $('#set-phone').value = s.phone || '';
-    $('#set-hero-title').value = s.hero_title || '';
-    $('#set-hero-sub').value = s.hero_subtitle || '';
+  function formatDate(s) {
+    if (!s) return '';
+    const d = new Date(s.replace(' ', 'T'));
+    if (Number.isNaN(d)) return s;
+    return d.toLocaleString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   }
 
-  async function refreshGallery() {
-    try {
-      const catalog = await loadCatalog();
-      renderGallery(catalog);
-      fillSettingsForm(catalog);
-    } catch (err) {
-      showStatus($('#upload-status'), err.message, 'err');
-    }
-  }
-
-  async function verifyToken() {
-    const token = $('#gh-token').value.trim();
-    if (!token) throw new Error('Введите токен');
-
-    const repo = $('#gh-repo').value.trim() || 'max-vibe-mod/galina-potekhina-site';
-    localStorage.setItem(STORAGE_TOKEN, token);
-    localStorage.setItem(STORAGE_REPO, repo);
-
-    await ghGetFile(CATALOG_PATH);
-    showStatus($('#connect-status'), 'Токен работает ✓', 'ok');
-    await refreshGallery();
-  }
-
-  async function uploadDress() {
-    const fileInput = $('#photo-input');
-    const title = $('#dress-title').value.trim();
-    const description = $('#dress-desc').value.trim();
-    const price = Number($('#dress-price').value) || 0;
-
-    if (!fileInput.files || !fileInput.files[0]) {
-      throw new Error('Выберите фото');
-    }
-    if (!title) throw new Error('Укажите название');
-
-    showStatus($('#upload-status'), 'Сжимаем фото…', 'info');
-    const blob = await compressImage(fileInput.files[0], 1400, 0.82);
-    const base64 = await blobToBase64(blob);
-
-    const fileKey = makeFileKey(title);
-    const imagePath = `${UPLOAD_DIR}/${fileKey}.jpg`;
-
-    showStatus($('#upload-status'), 'Загружаем фото в GitHub…', 'info');
-    await ghPutFile(imagePath, base64, `admin: фото платья «${title}»`);
-
-    showStatus($('#upload-status'), 'Обновляем каталог…', 'info');
-    const catalog = await loadCatalogFromGithub();
-    if (!Array.isArray(catalog.items)) catalog.items = [];
-
-    const maxOrder = catalog.items.reduce((m, i) => Math.max(m, i.sort_order || 0), 0);
-    catalog.items.push({
-      fileKey,
-      ext: '.jpg',
-      title,
-      description,
-      price,
-      sort_order: maxOrder + 1,
-      active: true
+  async function api(path, options) {
+    const key = getKey();
+    const res = await fetch('/api/mobile' + path, {
+      ...options,
+      headers: {
+        Authorization: 'Bearer ' + key,
+        ...(options && options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+        ...(options && options.headers ? options.headers : {})
+      }
     });
 
-    await saveCatalog(catalog, `admin: добавлено платье «${title}»`);
+    const text = await res.text();
+    let data;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch (_) {
+      data = { error: text || 'Ошибка сервера' };
+    }
 
-    showStatus(
-      $('#upload-status'),
-      'Готово! Render обновит сайт за 2–5 минут.',
-      'ok'
-    );
-
-    fileInput.value = '';
-    $('#photo-preview').hidden = true;
-    $('#file-pick').classList.remove('has-file');
-    $('#file-pick-label').textContent = '📷 Нажмите — выбрать фото';
-    $('#dress-title').value = '';
-    $('#dress-desc').value = '';
-    $('#dress-price').value = '';
-
-    await refreshGallery();
+    if (!res.ok) throw new Error(data.error || 'Ошибка ' + res.status);
+    return data;
   }
 
-  async function saveTexts() {
-    showStatus($('#texts-status'), 'Сохраняем…', 'info');
-    const catalog = await loadCatalogFromGithub();
-    catalog.settings = catalog.settings || {};
-    catalog.settings.phone = $('#set-phone').value.trim();
-    catalog.settings.hero_title = $('#set-hero-title').value.trim();
-    catalog.settings.hero_subtitle = $('#set-hero-sub').value.trim();
-
-    await saveCatalog(catalog, 'admin: обновлены тексты сайта');
-    showStatus($('#texts-status'), 'Тексты отправлены в GitHub ✓', 'ok');
+  function showApp() {
+    $('#screen-login').classList.remove('screen--active');
+    $('#screen-login').hidden = true;
+    $('#screen-app').hidden = false;
+    $('#screen-app').classList.add('screen--active');
   }
 
-  function initNav() {
-    $$('.bottom-nav button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.panel;
-        $$('.bottom-nav button').forEach((b) => b.classList.toggle('is-active', b === btn));
-        $$('.panel').forEach((p) => p.classList.toggle('is-active', p.id === 'panel-' + id));
+  function showLogin() {
+    stopPolling();
+    $('#screen-app').hidden = true;
+    $('#screen-app').classList.remove('screen--active');
+    $('#screen-login').hidden = false;
+    $('#screen-login').classList.add('screen--active');
+  }
+
+  async function login() {
+    const key = $('#mobile-key').value.trim();
+    if (!key) throw new Error('Введите ключ');
+    setKey(key);
+    await api('/ping');
+    showApp();
+    await refreshAll();
+    startPolling();
+    requestPushPermission();
+    navigateHash();
+  }
+
+  function navigateHash() {
+    const hash = (location.hash || '#inbox').slice(1);
+    const panel = ['inbox', 'gallery', 'texts'].includes(hash) ? hash : 'inbox';
+    switchPanel(panel);
+  }
+
+  function switchPanel(id) {
+    $$('.bottom-nav button[data-panel]').forEach((b) => {
+      b.classList.toggle('is-active', b.dataset.panel === id);
+    });
+    $$('.panel').forEach((p) => p.classList.toggle('is-active', p.id === 'panel-' + id));
+    location.hash = id;
+  }
+
+  function updateBadges() {
+    const total = (state.counts.ordersNew || 0) + (state.counts.rentalsNew || 0) + (state.counts.mediaPending || 0);
+    const badge = $('#badge-total');
+    const navBadge = $('#nav-badge');
+    if (total > 0) {
+      badge.hidden = false;
+      badge.textContent = total;
+      navBadge.hidden = false;
+      navBadge.textContent = total;
+    } else {
+      badge.hidden = true;
+      navBadge.hidden = true;
+    }
+    $('#stat-orders').textContent = state.counts.ordersNew || 0;
+    $('#stat-rentals').textContent = state.counts.rentalsNew || 0;
+    $('#stat-media').textContent = state.counts.mediaPending || 0;
+    $('#header-sub').textContent = total > 0 ? `${total} новых заявок` : 'Всё спокойно';
+  }
+
+  function maybeNotify() {
+    const total = (state.counts.ordersNew || 0) + (state.counts.rentalsNew || 0);
+    if (total > state.lastNotifyTotal && state.lastNotifyTotal > 0) {
+      const diff = total - state.lastNotifyTotal;
+      showBrowserNotification(`Новых заявок: ${diff}`, 'Откройте GP Админ');
+    }
+    state.lastNotifyTotal = total;
+  }
+
+  function showBrowserNotification(title, body) {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+    try {
+      new Notification(title, { body, icon: '/logo.png', badge: '/logo.png' });
+    } catch (_) { /* ignore */ }
+  }
+
+  async function requestPushPermission() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'granted') return;
+    try {
+      await Notification.requestPermission();
+    } catch (_) { /* ignore */ }
+  }
+
+  function renderInbox(data) {
+    const list = $('#inbox-list');
+    list.innerHTML = '';
+
+    const items = [];
+
+    for (const o of data.recentOrders || []) {
+      items.push({
+        type: 'order',
+        id: o.id,
+        title: `Заказ №${o.id}`,
+        sub: o.product_title,
+        who: o.customer_name,
+        phone: o.phone,
+        amount: o.amount,
+        status: o.status,
+        date: o.created_at,
+        isNew: o.status === 'new'
+      });
+    }
+
+    for (const r of data.recentRentals || []) {
+      items.push({
+        type: 'rental',
+        id: r.id,
+        title: `Аренда №${r.id}`,
+        sub: r.item_title,
+        who: r.customer_name,
+        phone: r.phone,
+        amount: r.amount,
+        status: r.status,
+        date: r.created_at,
+        extra: `${r.rent_from} — ${r.rent_to}`,
+        isNew: r.status === 'new'
+      });
+    }
+
+    items.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+    if (!items.length) {
+      list.innerHTML = '<p class="hint card">Заявок пока нет</p>';
+      return;
+    }
+
+    for (const item of items) {
+      const el = document.createElement('article');
+      el.className = 'inbox-item' + (item.isNew ? ' inbox-item--new' : '');
+      el.innerHTML = `
+        <div class="inbox-top">
+          <strong>${escapeHtml(item.title)}</strong>
+          <span class="pill pill--${item.isNew ? 'new' : 'done'}">${item.isNew ? 'новая' : item.status}</span>
+        </div>
+        <p class="inbox-sub">${escapeHtml(item.sub)}</p>
+        <p class="inbox-who">${escapeHtml(item.who)} · <a href="tel:${item.phone}">${escapeHtml(item.phone)}</a></p>
+        ${item.extra ? `<p class="inbox-extra">${escapeHtml(item.extra)}</p>` : ''}
+        <p class="inbox-meta">${formatMoney(item.amount)} · ${formatDate(item.date)}</p>
+        ${item.isNew ? `<div class="inbox-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-confirm="${item.type}" data-id="${item.id}">✓ Принять</button>
+        </div>` : ''}`;
+      list.appendChild(el);
+    }
+
+    list.querySelectorAll('[data-confirm]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        try {
+          const type = btn.dataset.confirm;
+          const id = btn.dataset.id;
+          if (type === 'order') {
+            await api(`/orders/${id}/status`, { method: 'POST', body: JSON.stringify({ status: 'confirmed' }) });
+          } else {
+            await api(`/rentals/${id}/status`, { method: 'POST', body: JSON.stringify({ status: 'confirmed' }) });
+          }
+          await pollEvents();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          btn.disabled = false;
+        }
       });
     });
   }
 
-  function initPhotoPick() {
-    const input = $('#photo-input');
-    const preview = $('#photo-preview');
-    const pick = $('#file-pick');
-    const label = $('#file-pick-label');
+  function renderGallery() {
+    const list = $('#gallery-list');
+    list.innerHTML = '';
 
-    input.addEventListener('change', () => {
-      const file = input.files && input.files[0];
-      if (!file) return;
-      pick.classList.add('has-file');
-      label.textContent = file.name;
-      preview.src = URL.createObjectURL(file);
-      preview.hidden = false;
-    });
+    if (!state.gallery.length) {
+      list.innerHTML = '<p class="hint card">Коллекция пуста</p>';
+      return;
+    }
+
+    for (const item of state.gallery) {
+      const el = document.createElement('article');
+      el.className = 'dress-card' + (item.active ? '' : ' dress-card--off');
+      el.innerHTML = `
+        <img src="${item.image_path}" alt="" loading="lazy">
+        <div class="dress-card-body">
+          <strong>${escapeHtml(item.title)}</strong>
+          <span>${formatMoney(item.price)}</span>
+          <span class="dress-card-tags">${item.active ? '' : 'скрыто · '}${item.for_rent ? 'аренда' : ''} ${item.for_order ? 'покупка' : ''}</span>
+        </div>`;
+      el.addEventListener('click', () => openDressForm(item));
+      list.appendChild(el);
+    }
   }
 
-  function initTokenUi() {
-    const saved = getToken();
-    if (saved) $('#gh-token').value = saved;
-    $('#gh-repo').value = getRepo();
+  function fillSettings(s) {
+    $('#set-phone').value = s.phone || '';
+    $('#set-hero-title').value = s.hero_title || '';
+    $('#set-hero-sub').value = s.hero_subtitle || '';
+    $('#set-rental-title').value = s.rental_title || '';
+    $('#set-rental-text').value = s.rental_text || '';
+    const hint = $('#telegram-hint');
+    if (hint) {
+      hint.textContent = s.telegramConfigured === false
+        ? 'Telegram не настроен на сервере. Добавьте ADMIN_TELEGRAM_BOT_TOKEN в Render.'
+        : 'Telegram подключён — уведомления приходят даже когда приложение закрыто.';
+    }
+  }
 
-    $('#token-toggle').addEventListener('click', () => {
-      const inp = $('#gh-token');
-      inp.type = inp.type === 'password' ? 'text' : 'password';
-    });
+  async function refreshBootstrap() {
+    const data = await api('/bootstrap');
+    state.gallery = data.gallery || [];
+    state.counts = data.counts || {};
+    if (data.settings) fillSettings({ ...data.settings, telegramConfigured: data.telegramConfigured });
+    renderGallery();
+    updateBadges();
+  }
 
-    $('#btn-save-token').addEventListener('click', () => {
-      verifyToken().catch((err) => showStatus($('#connect-status'), err.message, 'err'));
-    });
+  async function pollEvents() {
+    const since = state.lastPoll || '1970-01-01 00:00:00';
+    const data = await api('/events?since=' + encodeURIComponent(since));
+    state.counts = data.counts || state.counts;
+    state.lastPoll = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    renderInbox(data);
+    updateBadges();
+    maybeNotify();
+  }
+
+  async function refreshAll() {
+    await refreshBootstrap();
+    await pollEvents();
+  }
+
+  function startPolling() {
+    stopPolling();
+    state.pollTimer = setInterval(() => {
+      pollEvents().catch(() => {});
+    }, POLL_MS);
+  }
+
+  function stopPolling() {
+    if (state.pollTimer) clearInterval(state.pollTimer);
+    state.pollTimer = null;
+  }
+
+  function openDressForm(item) {
+    const dlg = $('#dress-dialog');
+    const isNew = !item;
+    $('#dress-form-title').textContent = isNew ? 'Новое платье' : 'Редактировать';
+    $('#dress-id').value = isNew ? '' : item.id;
+    $('#dress-title').value = isNew ? '' : item.title;
+    $('#dress-desc').value = isNew ? '' : (item.description || '');
+    $('#dress-price').value = isNew ? '' : item.price;
+    $('#dress-active').checked = isNew ? true : !!item.active;
+    $('#dress-rent').checked = isNew ? true : !!item.for_rent;
+    $('#dress-buy').checked = isNew ? true : !!item.for_order;
+    $('#dress-delete').hidden = isNew;
+    $('#dress-photo').value = '';
+    showStatus($('#dress-status'), '', '');
+
+    const img = $('#dress-img');
+    if (!isNew && item.image_path) {
+      img.src = item.image_path;
+      img.hidden = false;
+    } else {
+      img.hidden = true;
+    }
+
+    dlg.showModal();
+  }
+
+  async function saveDress(e) {
+    e.preventDefault();
+    const id = $('#dress-id').value;
+    const isNew = !id;
+    const status = $('#dress-status');
+    const photo = $('#dress-photo').files[0];
+
+    const payload = {
+      title: $('#dress-title').value.trim(),
+      description: $('#dress-desc').value.trim(),
+      price: $('#dress-price').value,
+      active: $('#dress-active').checked,
+      for_rent: $('#dress-rent').checked,
+      for_order: $('#dress-buy').checked
+    };
+
+    if (!payload.title) {
+      showStatus(status, 'Укажите название', 'err');
+      return;
+    }
+
+    try {
+      showStatus(status, 'Сохраняем…', 'info');
+
+      if (isNew) {
+        if (!photo) throw new Error('Выберите фото');
+        const fd = new FormData();
+        fd.append('image', photo);
+        fd.append('title', payload.title);
+        fd.append('description', payload.description);
+        fd.append('price', payload.price);
+        await api('/gallery', { method: 'POST', body: fd });
+      } else {
+        await api('/gallery/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+        if (photo) {
+          const fd = new FormData();
+          fd.append('image', photo);
+          await api('/gallery/' + id + '/photo', { method: 'POST', body: fd });
+        }
+      }
+
+      $('#dress-dialog').close();
+      await refreshBootstrap();
+    } catch (err) {
+      showStatus(status, err.message, 'err');
+    }
+  }
+
+  async function deleteDress() {
+    const id = $('#dress-id').value;
+    if (!id || !confirm('Удалить платье с сайта?')) return;
+    try {
+      await api('/gallery/' + id, { method: 'DELETE' });
+      $('#dress-dialog').close();
+      await refreshBootstrap();
+    } catch (err) {
+      showStatus($('#dress-status'), err.message, 'err');
+    }
+  }
+
+  async function saveTexts() {
+    try {
+      showStatus($('#texts-status'), 'Сохраняем…', 'info');
+      await api('/settings', {
+        method: 'POST',
+        body: JSON.stringify({
+          phone: $('#set-phone').value.trim(),
+          hero_title: $('#set-hero-title').value.trim(),
+          hero_subtitle: $('#set-hero-sub').value.trim(),
+          rental_title: $('#set-rental-title').value.trim(),
+          rental_text: $('#set-rental-text').value.trim()
+        })
+      });
+      showStatus($('#texts-status'), 'Сохранено на сайте ✓', 'ok');
+    } catch (err) {
+      showStatus($('#texts-status'), err.message, 'err');
+    }
   }
 
   function initPwa() {
@@ -370,51 +434,71 @@
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
-      deferredInstall = e;
+      state.deferredInstall = e;
       banner.hidden = false;
       btnInstall.hidden = false;
-      hint.textContent = 'Нажмите «Установить» — приложение появится на главном экране.';
+      hint.textContent = 'Нажмите «Установить» — иконка появится на главном экране.';
     });
 
     btnInstall.addEventListener('click', async () => {
-      if (!deferredInstall) return;
-      deferredInstall.prompt();
-      await deferredInstall.userChoice;
-      deferredInstall = null;
+      if (!state.deferredInstall) return;
+      state.deferredInstall.prompt();
+      await state.deferredInstall.userChoice;
+      state.deferredInstall = null;
       banner.hidden = true;
     });
 
     const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-
-    if (isIos && !isStandalone) {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    if (isIos && !standalone) {
       banner.hidden = false;
-      hint.textContent =
-        'iPhone: нажмите «Поделиться» ↗ в Safari → «На экран Домой».';
+      hint.textContent = 'iPhone: Поделиться ↗ → «На экран Домой».';
     }
   }
 
-  function initActions() {
-    $('#btn-refresh-gallery').addEventListener('click', refreshGallery);
-    $('#btn-upload-dress').addEventListener('click', () => {
-      $('#btn-upload-dress').disabled = true;
-      uploadDress()
-        .catch((err) => showStatus($('#upload-status'), err.message, 'err'))
-        .finally(() => {
-          $('#btn-upload-dress').disabled = false;
-        });
+  function init() {
+    initPwa();
+
+    $$('.bottom-nav button[data-panel]').forEach((btn) => {
+      btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
     });
-    $('#btn-save-texts').addEventListener('click', () => {
-      saveTexts().catch((err) => showStatus($('#texts-status'), err.message, 'err'));
+
+    $('#btn-login').addEventListener('click', () => {
+      login().catch((err) => showStatus($('#login-status'), err.message, 'err'));
     });
+
+    $('#btn-logout').addEventListener('click', () => {
+      clearKey();
+      showLogin();
+    });
+
+    $('#btn-new-dress').addEventListener('click', () => openDressForm(null));
+    $('#dress-close').addEventListener('click', () => $('#dress-dialog').close());
+    $('#dress-form').addEventListener('submit', saveDress);
+    $('#dress-delete').addEventListener('click', deleteDress);
+
+    $('#dress-photo').addEventListener('change', () => {
+      const f = $('#dress-photo').files[0];
+      if (!f) return;
+      const img = $('#dress-img');
+      img.src = URL.createObjectURL(f);
+      img.hidden = false;
+    });
+
+    $('#btn-save-texts').addEventListener('click', saveTexts);
+    $('#btn-enable-push').addEventListener('click', requestPushPermission);
+
+    window.addEventListener('hashchange', navigateHash);
+
+    const saved = getKey();
+    if (saved) {
+      $('#mobile-key').value = saved;
+      login().catch(() => {
+        clearKey();
+        showLogin();
+      });
+    }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initNav();
-    initPhotoPick();
-    initTokenUi();
-    initPwa();
-    initActions();
-    refreshGallery();
-  });
+  document.addEventListener('DOMContentLoaded', init);
 })();

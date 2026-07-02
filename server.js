@@ -37,7 +37,7 @@ async function start() {
   const adminRoutes = require('./routes/admin');
   const shopRoutes = require('./routes/shop');
   const accountRoutes = require('./routes/account');
-  const seoRoutes = require('./routes/seo');
+  const mobileApiRoutes = require('./routes/mobile-api');
 
   const app = express();
 
@@ -72,6 +72,8 @@ async function start() {
     res.locals.phoneHref = phoneTelHref;
     next();
   });
+
+  app.use('/api/mobile', mobileApiRoutes);
 
   app.use('/', seoRoutes);
 

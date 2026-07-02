@@ -1,5 +1,13 @@
 const nodemailer = require('nodemailer');
 
+function siteBase() {
+  return (process.env.SITE_URL || `http://localhost:${process.env.PORT || 3000}`).replace(/\/$/, '');
+}
+
+function mobileAppUrl(hash) {
+  return `${siteBase()}/admin/index.html${hash ? `#${hash}` : ''}`;
+}
+
 function createTransporter() {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) return null;
   return nodemailer.createTransport({
@@ -65,50 +73,59 @@ async function notifyAdmin(subject, html, plainText, settings) {
 
 async function notifyNewOrder(order, settings) {
   if (!order) return;
-  const siteBase = (process.env.SITE_URL || `http://localhost:${process.env.PORT || 3000}`).replace(/\/$/, '');
-  const subject = `Новый заказ №${order.id} — Galina Potekhina`;
+  const base = siteBase();
+  const subject = `🛍 Новый заказ №${order.id} — Galina Potekhina`;
   const plain = [
-    `Новый заказ №${order.id}`,
+    `🛍 Новый заказ №${order.id}`,
     `Товар: ${order.product_title}`,
     `Клиент: ${order.customer_name}`,
     `Телефон: ${order.phone}`,
     order.email ? `Email: ${order.email}` : null,
-    `Сумма: ${order.amount} ₽`
+    `Сумма: ${order.amount} ₽`,
+    '',
+    `Мобильное приложение: ${mobileAppUrl('inbox')}`,
+    `Админка: ${base}/admin/orders/${order.id}`
   ].filter(Boolean).join('\n');
 
-  const html = `<p><strong>Новый заказ №${order.id}</strong></p>
+  const html = `<p><strong>🛍 Новый заказ №${order.id}</strong></p>
     <p>Товар: ${order.product_title}<br>
     Клиент: ${order.customer_name}<br>
-    Телефон: ${order.phone}<br>
+    Телефон: <a href="tel:${order.phone}">${order.phone}</a><br>
     ${order.email ? `Email: ${order.email}<br>` : ''}
     Сумма: <strong>${order.amount.toLocaleString('ru-RU')} ₽</strong></p>
-    <p><a href="${siteBase}/admin/orders/${order.id}">Открыть в админке</a></p>`;
+    <p><a href="${mobileAppUrl('inbox')}">Открыть в приложении</a> ·
+    <a href="${base}/admin/orders/${order.id}">Веб-админка</a></p>`;
 
   return notifyAdmin(subject, html, plain, settings);
 }
 
 async function notifyNewRental(booking, settings) {
   if (!booking) return;
-  const siteBase = (process.env.SITE_URL || `http://localhost:${process.env.PORT || 3000}`).replace(/\/$/, '');
-  const subject = `Новая аренда №${booking.id} — Galina Potekhina`;
+  const base = siteBase();
+  const subject = `👗 Новая аренда №${booking.id} — Galina Potekhina`;
   const plain = [
-    `Новая заявка на аренду №${booking.id}`,
-    `Вещь: ${booking.item_title}`,
+    `👗 Новая заявка на аренду №${booking.id}`,
+    `Платье: ${booking.item_title}`,
     `Клиент: ${booking.customer_name}`,
     `Телефон: ${booking.phone}`,
     `Период: ${booking.rent_from} — ${booking.rent_to}`,
-    `Сумма: ${booking.amount} ₽`
-  ].join('\n');
+    `Сумма: ${booking.amount} ₽`,
+  booking.deposit_amount ? `Залог: ${booking.deposit_amount} ₽` : null,
+    '',
+    `Мобильное приложение: ${mobileAppUrl('inbox')}`,
+    `Админка: ${base}/admin/rentals`
+  ].filter(Boolean).join('\n');
 
-  const html = `<p><strong>Новая аренда №${booking.id}</strong></p>
-    <p>Вещь: ${booking.item_title}<br>
+  const html = `<p><strong>👗 Новая аренда №${booking.id}</strong></p>
+    <p>Платье: ${booking.item_title}<br>
     Клиент: ${booking.customer_name}<br>
-    Телефон: ${booking.phone}<br>
+    Телефон: <a href="tel:${booking.phone}">${booking.phone}</a><br>
     Период: ${booking.rent_from} — ${booking.rent_to}<br>
     Сумма: <strong>${booking.amount.toLocaleString('ru-RU')} ₽</strong></p>
-    <p><a href="${siteBase}/admin/rentals">Открыть в админке</a></p>`;
+    <p><a href="${mobileAppUrl('inbox')}">Открыть в приложении</a> ·
+    <a href="${base}/admin/rentals">Веб-админка</a></p>`;
 
   return notifyAdmin(subject, html, plain, settings);
 }
 
-module.exports = { notifyNewOrder, notifyNewRental };
+module.exports = { notifyNewOrder, notifyNewRental, sendTelegram, mobileAppUrl };
