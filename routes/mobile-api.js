@@ -301,7 +301,21 @@ router.delete('/orders/:id', (req, res) => {
   res.json({ ok: true });
 });
 
+router.post('/orders/:id/delete', (req, res) => {
+  const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
+  if (!order) return res.status(404).json({ error: 'Заказ не найден' });
+  db.prepare('DELETE FROM orders WHERE id = ?').run(order.id);
+  res.json({ ok: true });
+});
+
 router.delete('/rentals/:id', (req, res) => {
+  const booking = db.prepare('SELECT * FROM rental_bookings WHERE id = ?').get(req.params.id);
+  if (!booking) return res.status(404).json({ error: 'Аренда не найдена' });
+  db.prepare('DELETE FROM rental_bookings WHERE id = ?').run(booking.id);
+  res.json({ ok: true });
+});
+
+router.post('/rentals/:id/delete', (req, res) => {
   const booking = db.prepare('SELECT * FROM rental_bookings WHERE id = ?').get(req.params.id);
   if (!booking) return res.status(404).json({ error: 'Аренда не найдена' });
   db.prepare('DELETE FROM rental_bookings WHERE id = ?').run(booking.id);

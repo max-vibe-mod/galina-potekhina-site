@@ -387,7 +387,7 @@
         if (!confirm(`Удалить ${label} №${id}? Это действие нельзя отменить.`)) return;
         btn.disabled = true;
         try {
-          await api(`/${type === 'order' ? 'orders' : 'rentals'}/${id}`, { method: 'DELETE' });
+          await api(`/${type === 'order' ? 'orders' : 'rentals'}/${id}/delete`, { method: 'POST', body: '{}' });
           await pollEvents();
         } catch (err) {
           alert(err.message);
