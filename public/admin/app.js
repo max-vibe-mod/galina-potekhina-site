@@ -159,6 +159,9 @@
     $$('.bottom-nav .nav-btn[data-panel]').forEach((b) => {
       b.classList.toggle('is-active', b.dataset.panel === id);
     });
+    $$('.top-tabs .top-tab[data-panel]').forEach((b) => {
+      b.classList.toggle('is-active', b.dataset.panel === id);
+    });
     $$('.panel').forEach((p) => p.classList.toggle('is-active', p.id === 'panel-' + id));
     location.hash = id;
   }
@@ -616,6 +619,9 @@
     initNative();
 
     $$('.bottom-nav .nav-btn[data-panel]').forEach((btn) => {
+      btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
+    });
+    $$('.top-tabs .top-tab[data-panel]').forEach((btn) => {
       btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
     });
 

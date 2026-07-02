@@ -91,7 +91,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 10px 12px;
   background: rgba(13, 13, 13, 0.94);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--gold-dim);
@@ -135,10 +135,40 @@ body {
 }
 
 main {
-  padding: 14px 16px 20px;
+  padding: 10px 12px 16px;
   max-width: 520px;
   margin: 0 auto;
   width: 100%;
+}
+
+.top-tabs {
+  position: sticky;
+  top: 64px;
+  z-index: 9;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(13, 13, 13, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gold-dim);
+}
+
+.top-tab {
+  min-height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 151, 90, 0.25);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.top-tab.is-active {
+  color: #1a1208;
+  background: linear-gradient(180deg, #dfc88a 0%, var(--gold) 100%);
+  border-color: transparent;
 }
 
 .panel {
@@ -154,8 +184,8 @@ main {
   background: var(--surface);
   border: 1px solid var(--gold-dim);
   border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 14px;
+  padding: 12px;
+  margin-bottom: 10px;
 }
 
 .card h2 {
@@ -227,7 +257,7 @@ main {
 
 .stat {
   border-radius: 12px;
-  padding: 12px 8px;
+  padding: 9px 6px;
   text-align: center;
   background: var(--surface-2);
   border: 1px solid transparent;
@@ -410,7 +440,7 @@ textarea {
   background: var(--surface);
   border: 1px solid var(--gold-dim);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 10px;
 }
 
 .inbox-item--new {
@@ -497,7 +527,7 @@ textarea {
 
 .dress-card {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   background: var(--surface);
   border: 1px solid var(--gold-dim);
   border-radius: var(--radius);
@@ -510,15 +540,15 @@ textarea {
 }
 
 .dress-card img {
-  width: 92px;
-  height: 116px;
+  width: 80px;
+  height: 102px;
   object-fit: cover;
   flex-shrink: 0;
   background: #111;
 }
 
 .dress-card-body {
-  padding: 12px 14px 12px 0;
+  padding: 8px 10px 8px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -551,7 +581,7 @@ textarea {
   border-top: 1px solid var(--gold-dim);
   padding-bottom: var(--safe-bottom);
   z-index: 20;
-  height: calc(var(--nav-h) + var(--safe-bottom));
+  height: calc(62px + var(--safe-bottom));
 }
 
 .nav-btn {
@@ -559,7 +589,7 @@ textarea {
   background: none;
   border: none;
   color: var(--muted);
-  padding: 8px 4px 10px;
+  padding: 6px 4px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -584,12 +614,12 @@ textarea {
 }
 
 .nav-ico {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   line-height: 1;
 }
 
 .nav-label {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.02em;
 }

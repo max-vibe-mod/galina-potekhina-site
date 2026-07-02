@@ -1,28 +1,30 @@
-﻿<% const _title = (typeof meta !== 'undefined' && meta.title) ? meta.title : (typeof title !== 'undefined' ? title : 'Galina Potekhina'); %>
-<% const _desc = (typeof meta !== 'undefined' && meta.description) ? meta.description : 'РЎС‚СѓРґРёСЏ РїСЂРµРјРёР°Р»СЊРЅРѕРіРѕ РїРѕС€РёРІР° Galina Potekhina РІРѕ Р’Р»Р°РґРёРІРѕСЃС‚РѕРєРµ вЂ” РїРѕС€РёРІ РїР»Р°С‚СЊРµРІ РЅР° Р·Р°РєР°Р· Рё Р°СЂРµРЅРґР°.'; %>
-<% const _keywords = (typeof meta !== 'undefined' && meta.keywords) ? meta.keywords : 'РїРѕС€РёРІ РїР»Р°С‚СЊСЏ РЅР° Р·Р°РєР°Р· РІР»Р°РґРёРІРѕСЃС‚РѕРє, Р°СЂРµРЅРґР° РїР»Р°С‚СЊСЏ РІР»Р°РґРёРІРѕСЃС‚РѕРє, РєСѓРїРёС‚СЊ РІРµС‡РµСЂРЅРµРµ РїР»Р°С‚СЊРµ РІР»Р°РґРёРІРѕСЃС‚РѕРє, СЃС‚СѓРґРёСЏ РїРѕС€РёРІР° РІР»Р°РґРёРІРѕСЃС‚РѕРє'; %>
+<% const _title = (typeof meta !== 'undefined' && meta.title) ? meta.title : (typeof title !== 'undefined' ? title : 'Galina Potekhina'); %>
+<% const _desc = (typeof meta !== 'undefined' && meta.description) ? meta.description : 'Студия премиального пошива Galina Potekhina во Владивостоке — пошив платьев на заказ и аренда.'; %>
+<% const _keywords = (typeof meta !== 'undefined' && meta.keywords) ? meta.keywords : 'пошив платья на заказ владивосток, аренда платья владивосток, купить вечернее платье владивосток, студия пошива владивосток'; %>
 <% const _path = (typeof meta !== 'undefined' && meta.path) ? meta.path : '/'; %>
-<% const _img = (typeof meta !== 'undefined' && meta.image) ? meta.image : '/logo.png'; %>
+<% const _img = (typeof meta !== 'undefined' && meta.image) ? meta.image : '/logo.png?v=10'; %>
 <% const _noindex = (typeof meta !== 'undefined' && meta.noindex); %>
 <% const _canonical = siteUrl + _path; %>
 <% const _ogImage = _img.startsWith('http') ? _img : siteUrl + _img; %>
-<% const _pageTitle = _title.includes('Galina Potekhina') ? _title : _title + ' вЂ” Galina Potekhina'; %>
+<% const _pageTitle = _title.includes('Galina Potekhina') ? _title : _title + ' — Galina Potekhina'; %>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title><%= _pageTitle %></title>
 <meta name="description" content="<%= _desc %>">
 <meta name="keywords" content="<%= _keywords %>">
 <meta name="geo.region" content="RU-PRI">
-<meta name="geo.placename" content="Р’Р»Р°РґРёРІРѕСЃС‚РѕРє">
+<meta name="geo.placename" content="Владивосток">
 <meta name="geo.position" content="43.115542;131.885494">
 <meta name="ICBM" content="43.115542, 131.885494">
 <link rel="canonical" href="<%= _canonical %>">
+<link rel="alternate" hreflang="ru-RU" href="<%= _canonical %>">
+<link rel="alternate" hreflang="x-default" href="<%= _canonical %>">
 <% if (_noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><meta name="robots" content="index, follow"><% } %>
 <meta name="theme-color" content="#f5f2ec">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:site_name" content="Galina Potekhina вЂ” Р’Р»Р°РґРёРІРѕСЃС‚РѕРє">
+<meta property="og:site_name" content="Galina Potekhina — Владивосток">
 <meta property="og:title" content="<%= _pageTitle %>">
 <meta property="og:description" content="<%= _desc %>">
 <meta property="og:url" content="<%= _canonical %>">

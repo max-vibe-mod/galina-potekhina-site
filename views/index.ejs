@@ -1,4 +1,4 @@
-﻿<%- include('partials/header') %>
+<%- include('partials/header') %>
 
 <% const collectionDresses = locals.eveningGallery || []; %>
 
@@ -23,7 +23,7 @@
     <div class="hero-logo-wrap reveal">
       <img
         src="/logo.png?v=10"
-        alt="РЎС‚СѓРґРёСЏ РїРѕС€РёРІР° Р“Р°Р»РёРЅС‹ РџРѕС‚РµС…РёРЅРѕР№"
+        alt="Студия пошива Галины Потехиной"
         class="hero-logo-circle"
         width="300"
         height="300"
@@ -32,7 +32,7 @@
       >
     </div>
 
-    <p class="hero-eyebrow reveal reveal-delay-1">РЎС‚СѓРґРёСЏ В· Р’Р»Р°РґРёРІРѕСЃС‚РѕРє</p>
+    <p class="hero-eyebrow reveal reveal-delay-1">Студия · Владивосток</p>
 
     <h1 class="reveal reveal-delay-2"><%= settings.hero_title %></h1>
 
@@ -44,25 +44,25 @@
 
       <a href="#tailoring" class="hero-path-card">
 
-        <span class="hero-path-title">РџРѕС€РёРІ РЅР° Р·Р°РєР°Р·</span>
+        <span class="hero-path-title">Пошив на заказ</span>
 
-        <span class="hero-path-desc">РРЅРґРёРІРёРґСѓР°Р»СЊРЅРѕРµ РїР»Р°С‚СЊРµ РїРѕ РјРµСЂРєР°Рј</span>
+        <span class="hero-path-desc">Индивидуальное платье по меркам</span>
 
       </a>
 
       <a href="#collection-buy" class="hero-path-card">
 
-        <span class="hero-path-title">РљСѓРїРёС‚СЊ РїР»Р°С‚СЊРµ</span>
+        <span class="hero-path-title">Купить платье</span>
 
-        <span class="hero-path-desc">Р“РѕС‚РѕРІС‹Рµ РјРѕРґРµР»Рё РёР· РєРѕР»Р»РµРєС†РёРё</span>
+        <span class="hero-path-desc">Готовые модели из коллекции</span>
 
       </a>
 
       <a href="#collection-rent" class="hero-path-card">
 
-        <span class="hero-path-title">РђСЂРµРЅРґР°</span>
+        <span class="hero-path-title">Аренда</span>
 
-        <span class="hero-path-desc">РџР»Р°С‚СЊСЏ РЅР°РїСЂРѕРєР°С‚ РЅР° С‚РѕСЂР¶РµСЃС‚РІРѕ</span>
+        <span class="hero-path-desc">Платья напрокат на торжество</span>
 
       </a>
 
@@ -72,7 +72,7 @@
 
     <div class="hero-actions reveal reveal-delay-5">
 
-      <a href="#contacts" class="btn btn-outline btn-lg hero-btn-outline">РЎРІСЏР·Р°С‚СЊСЃСЏ СЃ РЅР°РјРё</a>
+      <a href="#contacts" class="btn btn-outline btn-lg hero-btn-outline">Связаться с нами</a>
 
     </div>
 
@@ -92,9 +92,9 @@
 
     <div class="section-head reveal">
 
-      <span class="section-label">РЎС‚СѓРґРёСЏ</span>
+      <span class="section-label">Студия</span>
 
-      <h2><%= settings.about_title || 'Рћ СЃС‚СѓРґРёРё' %></h2>
+      <h2><%= settings.about_title || 'О студии' %></h2>
 
     </div>
 
@@ -110,7 +110,7 @@
 
             src: settings.about_image || '/logo.png',
 
-            alt: 'Galina Potekhina вЂ” СЃС‚СѓРґРёСЏ РїРѕС€РёРІР°',
+            alt: 'Galina Potekhina — студия пошива',
 
             imgClass: 'about-studio-logo'
 
@@ -132,11 +132,11 @@
 
         <div class="about-features">
 
-          <div class="about-feature"><span>01</span><p>РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РїРѕС€РёРІ РїРѕ РјРµСЂРєР°Рј</p></div>
+          <div class="about-feature"><span>01</span><p>Индивидуальный пошив по меркам</p></div>
 
-          <div class="about-feature"><span>02</span><p>РџСЂРµРјРёР°Р»СЊРЅС‹Рµ РјР°С‚РµСЂРёР°Р»С‹ Рё СЂСѓС‡РЅР°СЏ СЂР°Р±РѕС‚Р°</p></div>
+          <div class="about-feature"><span>02</span><p>Премиальные материалы и ручная работа</p></div>
 
-          <div class="about-feature"><span>03</span><p>РџСЂРёРјРµСЂРєРё Рё СЃРѕРїСЂРѕРІРѕР¶РґРµРЅРёРµ Р·Р°РєР°Р·Р°</p></div>
+          <div class="about-feature"><span>03</span><p>Примерки и сопровождение заказа</p></div>
 
         </div>
 
@@ -148,15 +148,15 @@
 
       <% const timeline = [
 
-        { num: '01', title: 'РљРѕРЅСЃСѓР»СЊС‚Р°С†РёСЏ', desc: 'РћР±СЃСѓР¶РґР°РµРј РјРѕРґРµР»СЊ Рё РїРѕР¶РµР»Р°РЅРёСЏ' },
+        { num: '01', title: 'Консультация', desc: 'Обсуждаем модель и пожелания' },
 
-        { num: '02', title: 'РњРµСЂРєРё', desc: 'РЎРЅРёРјР°РµРј РїР°СЂР°РјРµС‚СЂС‹ РёР»Рё РёСЃРїРѕР»СЊР·СѓРµРј РІР°С€Рё' },
+        { num: '02', title: 'Мерки', desc: 'Снимаем параметры или используем ваши' },
 
-        { num: '03', title: 'РџРѕС€РёРІ', desc: 'РЎРѕР·РґР°С‘Рј РёР·РґРµР»РёРµ РІСЂСѓС‡РЅСѓСЋ' },
+        { num: '03', title: 'Пошив', desc: 'Создаём изделие вручную' },
 
-        { num: '04', title: 'РџСЂРёРјРµСЂРєР°', desc: 'РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј РїРѕСЃР°РґРєСѓ' },
+        { num: '04', title: 'Примерка', desc: 'Корректируем посадку' },
 
-        { num: '05', title: 'Р“РѕС‚РѕРІРѕ', desc: 'РџРµСЂРµРґР°С‘Рј РіРѕС‚РѕРІСѓСЋ РІРµС‰СЊ РєР»РёРµРЅС‚Сѓ' }
+        { num: '05', title: 'Готово', desc: 'Передаём готовую вещь клиенту' }
 
       ]; %>
 
@@ -192,11 +192,11 @@
 
     <div class="section-head reveal">
 
-      <span class="section-label">РџРѕС€РёРІ</span>
+      <span class="section-label">Пошив</span>
 
-      <h2>РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РїРѕС€РёРІ</h2>
+      <h2>Индивидуальный пошив</h2>
 
-      <p class="section-lead">РЎРѕР·РґР°РґРёРј РїР»Р°С‚СЊРµ РјРµС‡С‚С‹ РїРѕ РІР°С€РёРј РјРµСЂРєР°Рј вЂ” РѕС‚ СЌСЃРєРёР·Р° РґРѕ С„РёРЅР°Р»СЊРЅРѕР№ РїСЂРёРјРµСЂРєРё</p>
+      <p class="section-lead">Создадим платье мечты по вашим меркам — от эскиза до финальной примерки</p>
 
     </div>
 
@@ -204,19 +204,19 @@
 
       <div class="service-detail-card lux-panel">
 
-        <h3>Р’Р°С€Рµ СѓРЅРёРєР°Р»СЊРЅРѕРµ РїР»Р°С‚СЊРµ</h3>
+        <h3>Ваше уникальное платье</h3>
 
-        <p class="service-detail-text">РЎРІР°РґРµР±РЅС‹Рµ Рё РІРµС‡РµСЂРЅРёРµ РїР»Р°С‚СЊСЏ, РїРѕРґРёСѓРјРЅС‹Рµ РѕР±СЂР°Р·С‹ Рё С‚РѕСЂР¶РµСЃС‚РІРµРЅРЅС‹Рµ РЅР°СЂСЏРґС‹. РџРѕРґР±РёСЂР°РµРј С„Р°СЃРѕРЅ, С‚РєР°РЅСЊ Рё РґРµРєРѕСЂ РІРјРµСЃС‚Рµ СЃ РІР°РјРё.</p>
+        <p class="service-detail-text">Свадебные и вечерние платья, подиумные образы и торжественные наряды. Подбираем фасон, ткань и декор вместе с вами.</p>
 
-        <a href="#contacts" class="btn btn-luxury">РћР±СЃСѓРґРёС‚СЊ РїРѕС€РёРІ</a>
+        <a href="#contacts" class="btn btn-luxury">Обсудить пошив</a>
 
       </div>
 
       <div class="service-detail-card service-detail-card--accent lux-panel reveal reveal-delay-1">
 
-        <h3>РљР°Рє РЅР°С‡Р°С‚СЊ</h3>
+        <h3>Как начать</h3>
 
-        <p class="service-detail-text">РџРѕР·РІРѕРЅРёС‚Рµ РёР»Рё РЅР°РїРёС€РёС‚Рµ РЅР°Рј вЂ” СЂР°СЃСЃРєР°Р¶РµРј Рѕ СЃСЂРѕРєР°С…, СЃС‚РѕРёРјРѕСЃС‚Рё Рё Р·Р°РїРёС€РµРј РЅР° РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ. РњРѕР¶РЅРѕ РїСЂРёР№С‚Рё СЃ СЂРµС„РµСЂРµРЅСЃР°РјРё Рё РёРґРµСЏРјРё.</p>
+        <p class="service-detail-text">Позвоните или напишите нам — расскажем о сроках, стоимости и запишем на консультацию. Можно прийти с референсами и идеями.</p>
 
         <% if (settings.phone) { %>
 
@@ -226,7 +226,7 @@
 
         <div class="service-detail-contacts">
 
-          <p class="service-detail-contacts-label">Р’СЃРµ РєРѕРЅС‚Р°РєС‚С‹</p>
+          <p class="service-detail-contacts-label">Все контакты</p>
 
           <%- include('partials/social-icons') %>
 
@@ -254,11 +254,11 @@
 
     <div class="section-head reveal">
 
-      <span class="section-label">РљРѕР»Р»РµРєС†РёСЏ</span>
+      <span class="section-label">Коллекция</span>
 
-      <h2>РџР»Р°С‚СЊСЏ СЃС‚СѓРґРёРё</h2>
+      <h2>Платья студии</h2>
 
-      <p class="section-lead">РќР°РІРµРґРёС‚Рµ РЅР° С„РѕС‚Рѕ вЂ” РІС‹Р±РµСЂРёС‚Рµ <strong>Р°СЂРµРЅРґСѓ</strong> РёР»Рё <strong>РїРѕРєСѓРїРєСѓ</strong>. РџРѕС€РёРІ РЅР° Р·Р°РєР°Р· вЂ” РїРѕ С‚РµР»РµС„РѕРЅСѓ РёР»Рё РІ СЂР°Р·РґРµР»Рµ РІС‹С€Рµ.</p>
+      <p class="section-lead">Наведите на фото — выберите <strong>аренду</strong> или <strong>покупку</strong>. Пошив на заказ — по телефону или в разделе выше.</p>
 
     </div>
 
@@ -268,25 +268,25 @@
 
       <div class="collection-hint" id="collection-rent" role="listitem">
 
-        <span>РђСЂРµРЅРґР°</span>
+        <span>Аренда</span>
 
-        <p>Р—Р°СЏРІРєР° РЅР° СЃР°Р№С‚Рµ, РґРѕРіРѕРІРѕСЂ Рё Р·Р°Р»РѕРі РїСЂРё РІС‹РґР°С‡Рµ</p>
+        <p>Заявка на сайте, договор и залог при выдаче</p>
 
       </div>
 
       <div class="collection-hint" id="collection-buy" role="listitem">
 
-        <span>РџРѕРєСѓРїРєР°</span>
+        <span>Покупка</span>
 
-        <p>РќР°Р¶РјРёС‚Рµ В«РљСѓРїРёС‚СЊ РїР»Р°С‚СЊРµВ» вЂ” РїРѕР·РІРѕРЅРёС‚Рµ Рё РґРѕРіРѕРІРѕСЂРёС‚РµСЃСЊ Рѕ РїРµСЂРµРґР°С‡Рµ</p>
+        <p>Нажмите «Купить платье» — позвоните и договоритесь о передаче</p>
 
       </div>
 
       <div class="collection-hint" role="listitem">
 
-        <span>РџРѕС€РёРІ</span>
+        <span>Пошив</span>
 
-        <p>РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ Р·Р°РєР°Р· РїРѕ РІР°С€РёРј РјРµСЂРєР°Рј вЂ” <a href="#tailoring">СЂР°Р·РґРµР» РїРѕС€РёРІР°</a></p>
+        <p>Индивидуальный заказ по вашим меркам — <a href="#tailoring">раздел пошива</a></p>
 
       </div>
 
@@ -296,7 +296,7 @@
 
     <% if (!collectionDresses.length) { %>
 
-      <p class="empty-state reveal">РЎРєРѕСЂРѕ РїРѕСЏРІСЏС‚СЃСЏ РЅРѕРІС‹Рµ РјРѕРґРµР»Рё.</p>
+      <p class="empty-state reveal">Скоро появятся новые модели.</p>
 
     <% } else { %>
 
@@ -342,11 +342,11 @@
 
     <div class="section-head reveal">
 
-      <span class="section-label">РљРѕРЅС‚Р°РєС‚С‹</span>
+      <span class="section-label">Контакты</span>
 
-      <h2>РЎРІСЏР·Р°С‚СЊСЃСЏ СЃ РЅР°РјРё</h2>
+      <h2>Связаться с нами</h2>
 
-      <p class="section-lead">РџРѕС€РёРІ, РїРѕРєСѓРїРєР° РёР»Рё Р°СЂРµРЅРґР° вЂ” РѕС‚РІРµС‚РёРј РЅР° РІРѕРїСЂРѕСЃС‹ Рё РїРѕРјРѕР¶РµРј СЃ РІС‹Р±РѕСЂРѕРј</p>
+      <p class="section-lead">Пошив, покупка или аренда — ответим на вопросы и поможем с выбором</p>
 
     </div>
 
@@ -354,7 +354,7 @@
 
       <div class="contact-card contact-card--soft">
 
-        <h3>РўРµР»РµС„РѕРЅ</h3>
+        <h3>Телефон</h3>
 
         <% if (settings.phone) { %>
 
@@ -366,11 +366,11 @@
 
         <% } else { %>
 
-          <span class="contact-phone phone-display">РЈРєР°Р¶РёС‚Рµ РІ Р°РґРјРёРЅ-РїР°РЅРµР»Рё</span>
+          <span class="contact-phone phone-display">Укажите в админ-панели</span>
 
         <% } %>
 
-        <p class="contact-note">РљРѕРЅСЃСѓР»СЊС‚Р°С†РёСЏ, РїРѕРєСѓРїРєР°, Р°СЂРµРЅРґР° Рё РёРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ Р·Р°РєР°Р·</p>
+        <p class="contact-note">Консультация, покупка, аренда и индивидуальный заказ</p>
 
         <%- include('partials/social-icons') %>
 
