@@ -10,6 +10,10 @@ const { suggestRentPrices } = require('../utils/rentPricing');
 
 const router = express.Router();
 
+router.get('/health', (_req, res) => {
+  res.json({ ok: true, service: 'gp-mobile-api' });
+});
+
 const eveningDir = path.join(__dirname, '..', 'public', 'uploads', 'evening');
 if (!fs.existsSync(eveningDir)) fs.mkdirSync(eveningDir, { recursive: true });
 
