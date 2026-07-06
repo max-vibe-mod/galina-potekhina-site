@@ -115,16 +115,22 @@ async function start() {
     res.status(500).render('error', { title: 'Ошибка', message: err.message || 'Внутренняя ошибка', user: res.locals.user });
   });
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log('');
-    console.log('  ╔══════════════════════════════════════════╗');
-    console.log('  ║   Galina Potekhina — сайт запущен!       ║');
-    console.log('  ╠══════════════════════════════════════════╣');
-    console.log(`  ║   http://localhost:${PORT}                    ║`);
-    console.log('  ║   Админ: admin / (см. .env.local)        ║');
-    console.log('  ╚══════════════════════════════════════════╝');
-    console.log('');
-  });
+  if (typeof PhusionPassenger !== 'undefined') {
+    app.listen('passenger', () => {
+      console.log('Galina Potekhina — сайт запущен (Passenger)');
+    });
+  } else {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log('');
+      console.log('  ╔══════════════════════════════════════════╗');
+      console.log('  ║   Galina Potekhina — сайт запущен!       ║');
+      console.log('  ╠══════════════════════════════════════════╣');
+      console.log(`  ║   http://localhost:${PORT}                    ║`);
+      console.log('  ║   Админ: admin / (см. .env.local)        ║');
+      console.log('  ╚══════════════════════════════════════════╝');
+      console.log('');
+    });
+  }
 }
 
 start().catch(err => {

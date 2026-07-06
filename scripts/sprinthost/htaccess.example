@@ -1,0 +1,6 @@
+PassengerStartupFile server.js
+PassengerResolveSymlinksInDocumentRoot on
+Require all granted
+PassengerAppType node
+PassengerAppRoot /home/potehinag/domains/ЗАМЕНИТЕ-НА-ВАШ-ДОМЕН/public_html
+Options -MultiViews

@@ -1,0 +1,73 @@
+# Деплой Galina Potekhina на Sprinthost (тариф X-2)
+# Логин аккаунта: potehinag
+
+## Шаг 1 — в панели cp.sprinthost.ru
+
+1. Нажми **«Заполнить данные»** (красная точка) — без этого могут быть ограничения.
+2. Слева **«Сайты»** → добавь сайт или открой технический адрес вида `что-то.xsph.ru`.
+3. **«Сайты» → «Веб-серверы»** → для домена выбери **Node.js 22**.
+4. Запиши:
+   - технический URL сайта (например `potehinag.xsph.ru`);
+   - данные **SSH** (хост, логин `potehinag`, пароль — в письме или в панели).
+
+## Шаг 2 — подключись по SSH
+
+Windows PowerShell:
+
+```powershell
+ssh potehinag@SSH-ХОСТ.sprinthost.ru
+```
+
+(точный хост смотри в панели: **Сайты** или раздел SSH)
+
+## Шаг 3 — установка сайта на сервере
+
+В SSH выполни по очереди (замени `ВАШ-ДОМЕН` на папку сайта из панели):
+
+```bash
+cd ~/domains/ВАШ-ДОМЕН/public_html
+git clone https://github.com/max-vibe-mod/galina-potekhina-site.git .
+npm22 install --omit=dev
+mkdir -p data public/uploads tmp
+```
+
+Создай `.env.local`:
+
+```bash
+cat > .env.local << 'EOF'
+PORT=3000
+SITE_URL=https://ВАШ-ДОМЕН.xsph.ru
+SESSION_SECRET=замени-на-длинную-случайную-строку
+ADMIN_LOGIN=admin
+ADMIN_PASSWORD=2375
+MOBILE_ADMIN_KEY=gp-mobile-8f3c2a91b7e4d605c3f1a9b2e7d4c86
+EOF
+```
+
+Скопируй готовый `.htaccess`:
+
+```bash
+cp scripts/sprinthost/htaccess.example .htaccess
+```
+
+Отредактируй `.htaccess` — в строке `PassengerAppRoot` укажи **полный путь** к `public_html` (команда `pwd` покажет путь).
+
+Перезапуск приложения:
+
+```bash
+mkdir -p tmp
+touch tmp/restart.txt
+```
+
+## Шаг 4 — проверка
+
+Открой в браузере технический адрес сайта. Должна открыться главная Galina Potekhina.
+
+## Шаг 5 — админка на телефоне
+
+Когда сайт откроется — напиши мне URL. Обновлю приложение на новый адрес и пересоберу APK.
+
+## Если не открывается
+
+- Поддержка Sprinthost: **8 800 555-78-23** или чат в панели.
+- Скажи: «Node.js 22, Express, Passenger, нужна помощь с .htaccess».
